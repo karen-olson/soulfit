@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import React, { useState } from "react";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
@@ -8,9 +7,6 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import Select from "@mui/material/Select";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
 
 const theme = createTheme();
 
@@ -22,8 +18,28 @@ const defaultFormData = {
   passwordConfirmation: "",
 };
 
-const SignUpForm = () => {
+const SignUpForm = ({ createUser }) => {
   const [formData, setFormData] = useState(defaultFormData);
+
+  function handleChange(e) {
+    const value = e.target.value;
+    const key = e.target.name;
+
+    const updatedFormData = {
+      ...formData,
+      [key]: value,
+    };
+
+    setFormData(updatedFormData);
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+
+    createUser(formData);
+
+    setFormData(defaultFormData);
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -43,7 +59,7 @@ const SignUpForm = () => {
           <Box
             component="form"
             noValidate
-            // onSubmit={handleSubmit}
+            onSubmit={handleSubmit}
             sx={{ mt: 3 }}
           >
             <Grid container spacing={2}>
@@ -54,7 +70,7 @@ const SignUpForm = () => {
                   label="Name"
                   type="text"
                   value={formData["name"]}
-                  // onChange={handleChange}
+                  onChange={handleChange}
                   placeholder="Name"
                   fullWidth
                   InputLabelProps={{
@@ -69,7 +85,7 @@ const SignUpForm = () => {
                   label="Username"
                   type="text"
                   value={formData["username"]}
-                  // onChange={handleChange}
+                  onChange={handleChange}
                   placeholder="Username"
                   fullWidth
                   InputLabelProps={{
@@ -82,9 +98,9 @@ const SignUpForm = () => {
                   id="password"
                   name="password"
                   label="Password"
-                  type="text"
+                  type="password"
                   value={formData["password"]}
-                  // onChange={handleChange}
+                  onChange={handleChange}
                   placeholder="Password"
                   fullWidth
                   InputLabelProps={{
@@ -97,9 +113,9 @@ const SignUpForm = () => {
                   id="passwordConfirmation"
                   name="passwordConfirmation"
                   label="Password Confirmation"
-                  type="text"
+                  type="password"
                   value={formData["passwordConfirmation"]}
-                  // onChange={handleChange}
+                  onChange={handleChange}
                   placeholder="Password Confirmation"
                   fullWidth
                   InputLabelProps={{
@@ -116,6 +132,10 @@ const SignUpForm = () => {
             >
               Sign Up
             </Button>
+            <Typography>
+              Already have an account?
+              {/* <Link to= ??>Sign in</Link> */}
+            </Typography>
           </Box>
         </Box>
       </Container>
