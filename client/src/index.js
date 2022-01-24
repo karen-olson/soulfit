@@ -1,12 +1,24 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { BrowserRouter } from "react-router-dom";
 import "./index.css";
 import App from "./components/App";
 import reportWebVitals from "./reportWebVitals";
+import { CssBaseline } from "@mui/material";
+import { ThemeProvider } from "@mui/material/styles";
+import { Paper } from "@mui/material";
+import { theme } from "./theme.tsx";
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+      <CssBaseline />
+      <ThemeProvider theme={theme}>
+        <Paper sx={{ height: "100vh", width: "100vw" }}>
+          <App />
+        </Paper>
+      </ThemeProvider>
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById("root")
 );

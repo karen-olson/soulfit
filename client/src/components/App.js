@@ -1,12 +1,22 @@
-import React, { useState, useEffect } from "react";
-import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Switch, Route } from "react-router-dom";
 import SignUpForm from "./SignUpForm";
 import LogInForm from "./LogInForm";
 import NavBar from "./NavBar";
-import LogInForm from "./LogInForm";
+import AuthPage from "./AuthPage";
+import { Paper } from "@mui/material";
 
 function App() {
+  const [user, setUser] = useState(null);
   const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    fetch("/me").then((resp) => {
+      if (resp.ok) {
+        resp.json().then((user) => setUser(user));
+      }
+    });
+  }, []);
 
   useEffect(() => {
     fetch("/users")
@@ -41,32 +51,32 @@ function App() {
       }
     });
   }
-  console.log(users);
+
+  if (!user)
+    return (
+      <>
+        <Paper sx={{ height: "100vh", width: "100vw" }}>
+          <AuthPage onLogin={setUser} createUser={createUser} />
+        </Paper>
+      </>
+    );
 
   return (
-    <div className="App">
-      <BrowserRouter>
-        <NavBar />
-        <Switch>
-          <Route path="/signup">
-            <SignUpForm createUser={createUser} />
-          </Route>
-          <Route path="/signin">
-            <LogInForm />
-          </Route>
-          <Route path="/">
-            <h1>App</h1>
-          </Route>
-        </Switch>
-      </BrowserRouter>
-    </div>
+    <>
+      <NavBar />
+      <Switch>
+        <Route path="/signup">
+          <SignUpForm createUser={createUser} />
+        </Route>
+        <Route path="/signin">
+          <LogInForm onLogin={setUser} />
+        </Route>
+        <Route path="/">
+          <h1>App</h1>
+        </Route>
+      </Switch>
+    </>
   );
 }
 
 export default App;
-
-// Create a SignUpForm component
-// Make a static form that accepts name, username, password, and password confirmation
-// Add state (formData in form, users in App)
-// Add inverse data flow (send formData up to App)
-// In App, send new user data to backend & update users state
