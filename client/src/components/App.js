@@ -63,7 +63,7 @@ function App() {
 
   return (
     <>
-      <NavBar />
+      <NavBar setUser={setUser} />
       <Switch>
         <Route path="/signup">
           <SignUpForm createUser={createUser} />
