@@ -4,11 +4,12 @@ import SignUpForm from "./SignUpForm";
 import LogInForm from "./LogInForm";
 import NavBar from "./NavBar";
 import AuthPage from "./AuthPage";
+import VideoCard from "./VideoCard";
 import { Paper } from "@mui/material";
 
 function App() {
   const [user, setUser] = useState(null);
-  const [users, setUsers] = useState([]);
+  // const [users, setUsers] = useState([]);
 
   useEffect(() => {
     fetch("/me").then((resp) => {
@@ -18,11 +19,11 @@ function App() {
     });
   }, []);
 
-  useEffect(() => {
-    fetch("/users")
-      .then((resp) => resp.json())
-      .then((users) => setUsers(users));
-  }, []);
+  // useEffect(() => {
+  //   fetch("/users")
+  //     .then((resp) => resp.json())
+  //     .then((users) => setUsers(users));
+  // }, []);
 
   function changePasswordConfirmationCase(user) {
     user["password_confirmation"] = user["passwordConfirmation"];
@@ -44,8 +45,8 @@ function App() {
     fetch("/users", configObj).then((resp) => {
       if (resp.ok) {
         resp.json().then((newUser) => {
-          const updatedUsers = [...users, newUser];
-          setUsers(updatedUsers);
+          // const updatedUsers = [...users, newUser];
+          // setUsers(updatedUsers);
           // log user in?
         });
       }
@@ -73,6 +74,7 @@ function App() {
         </Route>
         <Route path="/">
           <h1>App</h1>
+          <VideoCard />
         </Route>
       </Switch>
     </>
