@@ -1,4 +1,6 @@
 class CategoriesController < ApplicationController
+    # remove this!
+    skip_before_action :authorize
 
     def index 
         categories = Category.all
@@ -34,6 +36,6 @@ class CategoriesController < ApplicationController
     end
 
     def category_params
-        params.permit(:id, :name)
+        params.permit(:id, :name, :img_url)
     end
 end

@@ -12,14 +12,14 @@ end
 
 sam = User.create(name: "Sam", username: "sam1", admin: false, password: "12345", password_confirmation: "12345")
 
-dance_fitness = Category.create(name: "Dance Fitness")
-yoga = Category.create(name: "Yoga")
-warmups = Category.create(name: "Warmups")
-cooldowns = Category.create(name: "Cooldowns")
-strength_training = Category.create(name: "Strength Training")
-mindfulness = Category.create(name: "Mindfulness")
-pilates = Category.create(name: "Pilates")
-hiit = Category.create(name: "HIIT")
+dance_fitness = Category.create(name: "Dance Fitness", img_url: "https://i.imgur.com/WyfjSt6.jpg")
+yoga = Category.create(name: "Yoga", img_url: "https://i.imgur.com/cE6NOvP.jpg")
+warmups = Category.create(name: "Warmups", img_url: "https://i.imgur.com/YI7GTQj.jpg")
+cooldowns = Category.create(name: "Cooldowns", img_url: "https://i.imgur.com/BqX8UrV.jpg")
+strength_training = Category.create(name: "Strength Training", img_url: "https://i.imgur.com/Vo9WsjT.jpg")
+mindfulness = Category.create(name: "Mindfulness", img_url: "https://i.imgur.com/vxe5oBc.jpg")
+pilates = Category.create(name: "Pilates", img_url: "https://i.imgur.com/iJ3ri9H.jpg")
+hiit = Category.create(name: "HIIT", img_url: "https://i.imgur.com/8JWLShr.jpg")
 
 bollywood_25 = Video.create(url: "https://www.youtube.com/watch?v=GjV4iOSgClk", title: "Bollywood Dance Fitness Workout at Home | Latest Trending Songs 2022 | Fat Burning Cardio : Part 25", content_creator: "Dhruvi Shah", uploaded_by_user_id: 1, duration_in_seconds: 1148, likes: 0, dislikes: 0, views: 0, category_id: dance_fitness.id)
 
