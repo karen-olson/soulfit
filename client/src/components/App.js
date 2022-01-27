@@ -5,10 +5,12 @@ import LogInForm from "./LogInForm";
 import NavBar from "./NavBar";
 import AuthPage from "./AuthPage";
 import VideoCard from "./VideoCard";
+import CategoryList from "./CategoryList";
 import { Paper } from "@mui/material";
 
 function App() {
   const [user, setUser] = useState(null);
+  const [categories, setCategories] = useState([]);
   // const [users, setUsers] = useState([]);
 
   useEffect(() => {
@@ -19,11 +21,11 @@ function App() {
     });
   }, []);
 
-  // useEffect(() => {
-  //   fetch("/users")
-  //     .then((resp) => resp.json())
-  //     .then((users) => setUsers(users));
-  // }, []);
+  useEffect(() => {
+    fetch("/categories")
+      .then((resp) => resp.json())
+      .then((categories) => setCategories(categories));
+  }, []);
 
   function changePasswordConfirmationCase(user) {
     user["password_confirmation"] = user["passwordConfirmation"];
@@ -53,6 +55,12 @@ function App() {
     });
   }
 
+  function onCategorySelect(id) {
+    console.log("id: ", id);
+    // filter videos based on current category and send the filtered videos list to VideoList
+    // OR make currentCategory a state variable and have VideoList filter the videos
+  }
+
   if (!user)
     return (
       <>
@@ -71,6 +79,15 @@ function App() {
         </Route>
         <Route path="/signin">
           <LogInForm onLogin={setUser} />
+        </Route>
+        <Route path="/categories">
+          <CategoryList
+            categories={categories}
+            onCategorySelect={onCategorySelect}
+          />
+        </Route>
+        <Route path="/categories/:id/videos">
+          {/* <VideoList videos={filteredVideos} /> */}
         </Route>
         <Route path="/">
           <h1>App</h1>

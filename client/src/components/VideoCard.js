@@ -1,9 +1,9 @@
 import ReactPlayer from "react-player";
 
-const VideoCard = () => {
+const VideoCard = ({ video }) => {
   return (
     <>
-      <ReactPlayer controls url="https://www.youtube.com/watch?v=ysz5S6PUM-U" />
+      <ReactPlayer controls url={video.url} />
     </>
   );
 };
