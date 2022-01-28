@@ -4,13 +4,15 @@ import SignUpForm from "./SignUpForm";
 import LogInForm from "./LogInForm";
 import NavBar from "./NavBar";
 import AuthPage from "./AuthPage";
-import VideoCard from "./VideoCard";
 import CategoryList from "./CategoryList";
+import VideoList from "./VideoList";
 import { Paper } from "@mui/material";
 
 function App() {
   const [user, setUser] = useState(null);
   const [categories, setCategories] = useState([]);
+  const [currentCategory, setCurrentCategory] = useState(0);
+  const [videos, setVideos] = useState([]);
   // const [users, setUsers] = useState([]);
 
   useEffect(() => {
@@ -25,6 +27,12 @@ function App() {
     fetch("/categories")
       .then((resp) => resp.json())
       .then((categories) => setCategories(categories));
+  }, []);
+
+  useEffect(() => {
+    fetch("/videos")
+      .then((resp) => resp.json())
+      .then((videos) => setVideos(videos));
   }, []);
 
   function changePasswordConfirmationCase(user) {
@@ -55,12 +63,6 @@ function App() {
     });
   }
 
-  function onCategorySelect(id) {
-    console.log("id: ", id);
-    // filter videos based on current category and send the filtered videos list to VideoList
-    // OR make currentCategory a state variable and have VideoList filter the videos
-  }
-
   if (!user)
     return (
       <>
@@ -80,18 +82,18 @@ function App() {
         <Route path="/signin">
           <LogInForm onLogin={setUser} />
         </Route>
+        <Route path={`/categories/:id/videos`}>
+          <VideoList videos={videos} />
+        </Route>
         <Route path="/categories">
           <CategoryList
             categories={categories}
-            onCategorySelect={onCategorySelect}
+            onCategorySelect={setCurrentCategory}
           />
-        </Route>
-        <Route path="/categories/:id/videos">
-          {/* <VideoList videos={filteredVideos} /> */}
         </Route>
         <Route path="/">
           <h1>App</h1>
-          <VideoCard />
+          {/* <VideoCard /> */}
         </Route>
       </Switch>
     </>
