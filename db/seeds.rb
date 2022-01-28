@@ -1,18 +1,23 @@
 require 'rest-client'
 require 'json'
-require 'pry'
 
-# This isn't working - why can't I access it in here but I can access it in the console?
 @youtube_api_key = ENV["YOUTUBE_API_KEY"]
 
+# https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&order=viewCount&q=dance%20fitness&relevanceLanguage=en&type=video&videoEmbeddable=true&videoSyndicated=true&key=
+
+
 def get_dance_fitness_video_data
-    videos = RestClient.get("https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=dance%20fitness&key=#{@youtube_api_key}")
+    binding.pry
+
+    videos = RestClient.get("https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&order=viewCount&q=dance%20fitness&relevanceLanguage=en&type=video&videoEmbeddable=true&videoSyndicated=true&key=#{@youtube_api_key}")
     videos_array = JSON.parse(videos)["items"]
-    # adjust query to get all the data I want
     # edit video DB columns to match desired data
     #       incl thumbnail, likes/dislikes, views?
     # create video objects from the data and assign a category
-    binding.pry
+end
+
+def convert_video_duration_to_seconds(duration)
+    # PTXXMXXS
 end
 
 def get_yoga_video_data
@@ -21,15 +26,34 @@ end
 
 def create_videos(dataset)
     # create videos from a dataset
+
+    # INCLUDED IN RESULTS
+    # id.videoId (add column)
+    # snippet.publishedAt (add column)
+    # snippet.channelId (add column)
+    # snippet.title 
+    # snippet.description (add column)
+    # snippet.thumbnails.default.url (add column)
+    # snippet.channelTitle (AKA content_creator)
+
+    # STILL NEED
+    # url (base url is 'https://www.youtube.com/watch?v=#{id.videoId}')
+    # likes
+    # dislikes
+    # views
+    # category_id
+    # duration_in_seconds
+    
 end
 
 
-get_youtube_data
+get_dance_fitness_video_data
 # def minutes_to_seconds(minutes, seconds)
 #     (minutes * 60) + seconds
 # end
 
-# sam = User.create(name: "Sam", username: "sam1", admin: false, password: "12345", password_confirmation: "12345")
+sam = User.create(name: "Sam", username: "sam1", admin: false, password: "12345", password_confirmation: "12345")
+puts sam.name
 
 # dance_fitness = Category.create(name: "Dance Fitness", img_url: "https://i.imgur.com/WyfjSt6.jpg")
 # yoga = Category.create(name: "Yoga", img_url: "https://i.imgur.com/cE6NOvP.jpg")

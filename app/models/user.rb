@@ -8,4 +8,8 @@ class User < ApplicationRecord
     # def uploaded_videos
         
     # end
+
+    def self.youtube_api_key
+        puts ENV["YOUTUBE_API_KEY"]
+    end
 end
