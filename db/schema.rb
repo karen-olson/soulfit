@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_27_015329) do
+ActiveRecord::Schema.define(version: 2022_01_31_190907) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -34,15 +34,18 @@ ActiveRecord::Schema.define(version: 2022_01_27_015329) do
   create_table "videos", force: :cascade do |t|
     t.string "url"
     t.string "title"
-    t.string "content_creator"
+    t.string "channel_title"
     t.integer "uploaded_by_user_id"
     t.integer "likes"
-    t.integer "dislikes"
     t.integer "views"
     t.bigint "category_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.integer "duration_in_seconds"
+    t.integer "duration"
+    t.datetime "published_at"
+    t.string "youtube_video_id"
+    t.text "description"
+    t.string "thumbnail_url"
     t.index ["category_id"], name: "index_videos_on_category_id"
   end
 

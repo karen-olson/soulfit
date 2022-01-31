@@ -1,5 +1,5 @@
 class Video < ApplicationRecord
   belongs_to :category
 
-  validates :url, :title, :content_creator, :uploaded_by_user_id, :duration_in_seconds, :category_id, presence: true
+  validates :url, :title, :channel_title, :duration, :youtube_video_id, :thumbnail_url, :category_id, presence: true
 end
