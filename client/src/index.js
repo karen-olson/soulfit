@@ -14,7 +14,7 @@ ReactDOM.render(
     <BrowserRouter>
       <CssBaseline />
       <ThemeProvider theme={theme}>
-        <Paper sx={{ height: "100vh", width: "100vw" }}>
+        <Paper sx={{ height: "infinite", width: "infinite" }}>
           <App />
         </Paper>
       </ThemeProvider>

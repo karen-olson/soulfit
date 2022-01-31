@@ -6,6 +6,8 @@ import NavBar from "./NavBar";
 import AuthPage from "./AuthPage";
 import CategoryList from "./CategoryList";
 import VideoList from "./VideoList";
+import Video from "./Video";
+import HomePage from "./HomePage";
 import { Paper } from "@mui/material";
 
 function App() {
@@ -91,9 +93,11 @@ function App() {
             onCategorySelect={setCurrentCategory}
           />
         </Route>
+        <Route path="/videos/:id">
+          <Video videos={videos} />
+        </Route>
         <Route path="/">
-          <h1>App</h1>
-          {/* <VideoCard /> */}
+          <HomePage />
         </Route>
       </Switch>
     </>
