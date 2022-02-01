@@ -1,5 +1,5 @@
 // import { createMuiTheme } from "@material-ui/core/styles";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { createTheme } from "@mui/material/styles";
 
 
 // Create a theme instance.
@@ -12,7 +12,9 @@ export const theme = createTheme({
       contrastText: "#fff"
     },
     secondary: {
-      main: "#ffffff"
+      main: "#ffffff",
+      light: "#fdc55c",
+      dark: "#d67d08",
     },
     text: {
       primary: "#fff",
@@ -33,12 +35,17 @@ export const theme = createTheme({
     },
     MuiInputLabel: {
       defaultProps: {
-        color: "primary"
+        color: "secondary"
       }
     },
     MuiLink: {
       defaultProps: {
         color: "primary.light"
+      }
+    },
+    MuiTextField: {
+      defaultProps: {
+        color: "primary"
       }
     }
   },

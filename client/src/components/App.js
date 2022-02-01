@@ -8,6 +8,7 @@ import CategoryList from "./CategoryList";
 import VideoList from "./VideoList";
 import Video from "./Video";
 import HomePage from "./HomePage";
+import VideoForm from "./VideoForm";
 import { Paper } from "@mui/material";
 
 function App() {
@@ -65,6 +66,14 @@ function App() {
     });
   }
 
+  function addVideo(video) {
+    console.log("video in addVideo: ", video);
+    // convert keys to ruby syntax
+    // send post request to /videos
+    // in /videos, check to see if a user is logged in. if so, do user_instance.video.create!... if not, do Video.create!
+    // update videos state
+  }
+
   if (!user)
     return (
       <>
@@ -91,6 +100,13 @@ function App() {
           <CategoryList
             categories={categories}
             onCategorySelect={setCurrentCategory}
+          />
+        </Route>
+        <Route path="/videos/new">
+          <VideoForm
+            videos={videos}
+            categories={categories}
+            onSubmitVideo={addVideo}
           />
         </Route>
         <Route path="/videos/:id">

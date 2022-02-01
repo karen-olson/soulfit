@@ -1,4 +1,6 @@
 class VideosController < ApplicationController
+    # remove this later
+    skip_before_action :authorize, only: :index
 
     def index
         videos = Video.all

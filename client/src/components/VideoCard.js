@@ -1,4 +1,3 @@
-import ReactPlayer from "react-player";
 import { useHistory } from "react-router-dom";
 import { ImageListItem, Typography } from "@mui/material";
 
@@ -12,7 +11,11 @@ const VideoCard = ({ video }) => {
   return (
     <>
       <ImageListItem key={video.id} sx={{ width: "15vw", height: "auto" }}>
-        <img src={video.thumbnail_url} onClick={handleVideoThumbnailClick} />
+        <img
+          src={video.thumbnail_url}
+          alt={`Thumbnail for ${video.title}`}
+          onClick={handleVideoThumbnailClick}
+        />
         <Typography fontSize={"small"}>{video.title}</Typography>
         <Typography>{video.channel_title}</Typography>
         <Typography fontSize={"small"}>
