@@ -12,7 +12,7 @@ const Video = ({ videos }) => {
   if (video) {
     return (
       <>
-        <Container>
+        <Container maxWidth="xl">
           <Box centered sx={{ width: "80vw", height: "auto", pb: "10vh" }}>
             <ReactPlayer
               controls

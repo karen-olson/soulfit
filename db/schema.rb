@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_31_190907) do
+ActiveRecord::Schema.define(version: 2022_01_31_232406) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,6 +20,15 @@ ActiveRecord::Schema.define(version: 2022_01_31_190907) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "img_url"
+  end
+
+  create_table "user_added_videos", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "video_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_user_added_videos_on_user_id"
+    t.index ["video_id"], name: "index_user_added_videos_on_video_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -49,5 +58,7 @@ ActiveRecord::Schema.define(version: 2022_01_31_190907) do
     t.index ["category_id"], name: "index_videos_on_category_id"
   end
 
+  add_foreign_key "user_added_videos", "users"
+  add_foreign_key "user_added_videos", "videos"
   add_foreign_key "videos", "categories"
 end

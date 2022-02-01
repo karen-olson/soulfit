@@ -16,10 +16,10 @@ const VideoList = ({ videos }) => {
   ));
 
   return (
-    <Container>
+    <Container maxWidth="xl">
       <Box
         centered
-        sx={{ width: "auto", height: "100vh", pt: "5vh", pb: "10vh" }}
+        sx={{ width: "80vw", height: "100vh", pt: "5vh", pb: "10vh" }}
       >
         <ImageList cols={5} gap={"auto"}>
           {videoCards}
