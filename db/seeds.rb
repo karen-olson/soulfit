@@ -4,8 +4,20 @@ require 'json'
 # To access ENV variable, run file with rails db:seed instead of ruby db/seeds.rb. 
 # When you run it with the ruby command, you don't have access to all the rails features.
 @youtube_api_key = ENV["YOUTUBE_API_KEY"]
+@youtube_api_key_2 = ENV["YOUTUBE_API_KEY_2"]
+
+# Make a class
+# Make a call and have it seed the data
+# If you're going to seed it once, lives in the database. 
+# Add comments and put notes in readme
+# For now it's ok
+
+# track amount of queries
+
+@count = 0
+
 @queries = [
-    "dance%20fitness"
+    "dance%20fitness",
     "yoga",
     "warmup",
     "cooldown",
@@ -15,62 +27,82 @@ require 'json'
     "hiit"
 ]
 
-def fetch_and_create_videos
-    video_ids_array = search_api_for_dance_fitness_videos
-    video_data = get_dance_fitness_video_data_from_id(video_ids_array)
+@video_ids_by_category = {
+    "dance%20fitness" => [],
+    "yoga" => [],
+    "warmup" => [],
+    "cooldown" => [],
+    "strength%20training" => [],
+    "mindfulness" => [],
+    "pilates" => [],
+    "hiit" => []
+}
+
+@video_data_by_category = {
+    "dance%20fitness" => [],
+    "yoga" => [],
+    "warmup" => [],
+    "cooldown" => [],
+    "strength%20training" => [],
+    "mindfulness" => [],
+    "pilates" => [],
+    "hiit" => []
+}
+
+def fetch_videos
+    search_api_for_video_ids
+    get_individual_video_data
+end
+
+def create_videos
     video_hashes = create_hashes_from_video_data(video_data)
     parsed_video_hashes = parse_dance_fitness_video_data(video_hashes)
     videos = create_videos(parsed_video_hashes)
 end
 
-def search_api_for_dance_fitness_videos
-    # un-hardcode this later
-    video_ids_by_category = {
-        "dance%20fitness": [],
-        "yoga": [],
-        "warmup": [],
-        "cooldown": [],
-        "strength%20training": [],
-        "mindfulness": [],
-        "pilates": [],
-        "hiit": []
-    }
 
+def search_api_for_video_ids
     @queries.each_with_index do |query, index|
-        binding.pry
-        category_videos = RestClient.get("https://youtube.googleapis.com/youtube/v3/search?&maxResults=10&order=viewCount&q=#{query}&relevanceLanguage=en&type=video&videoEmbeddable=true&videoSyndicated=true&key=#{@youtube_api_key}") 
-        category_videos_array = JSON.parse(category_videos)["items"]
+        category_videos_array = search_api_by_category(query)
         category_video_ids_array = category_videos_array.map{|video| video["id"]["videoId"]}
-        
-        binding.pry
-        # is this working??
-        video_ids_by_category[:query] = category_video_ids_array
+        @video_ids_by_category["#{query}"] = category_video_ids_array
     end
 
-    video_ids_by_category
 end
 
-def get_dance_fitness_video_data_from_id(video_ids_array)
-    # now we have a hash of arrays coming in. how to handle this change?
-    # for each query, look up the relevant array of ids
-    # then, iterate over that array and get the video data for each id
-    # save the video data over top of the video ids
+def search_api_by_category(query)
+    system("clear")
+    @count = @count + 1
+    puts "@count:" + @count.to_s + " - getting categories (should be 8)"
+    category_videos = RestClient.get("https://youtube.googleapis.com/youtube/v3/search?&maxResults=10&order=viewCount&q=#{query}&relevanceLanguage=en&type=video&videoEmbeddable=true&videoSyndicated=true&key=#{@youtube_api_key}") 
+    category_videos_array = JSON.parse(category_videos)["items"]
+end
 
-    video_data = []
-    
-    video_ids_array.each do |id|
-        data = RestClient.get("https://youtube.googleapis.com/youtube/v3/videos?part=contentDetails&part=%20id&part=statistics&part=snippet&id=#{id}&key=#{@youtube_api_key}")
-        json_data = JSON.parse(data)["items"]
-        video_data << json_data
+def get_individual_video_data
+    @video_data_by_category = @video_ids_by_category.each do |category, video_ids_array|
+        @video_data_by_category["category"]
+
+        video_ids_array.each do |id|
+            video_data = search_api_for_video(id)
+            video_hash = create_hash_from_video_data(video_data)
+            @video_data_by_category["#{category}"] << video_hash
+        end
     end
+    binding.pry
 
-    video_data
+    @video_data_by_category
 end
 
-def create_hashes_from_video_data(video_data)
-    # Do the same thing but have to do it once for each query
+def search_api_for_video(id)
+    system("clear")
+    @count = @count + 1
+    puts "@count:" + @count.to_s + " - getting videos (should be 88)"
+    raw_video_data = RestClient.get("https://youtube.googleapis.com/youtube/v3/videos?part=contentDetails&part=%20id&part=statistics&part=snippet&id=#{id}&key=#{@youtube_api_key}")
+    json_formatted_video_data = JSON.parse(raw_video_data)["items"]
+end
 
-    video_hashes = video_data.map do |video_array|
+def create_hash_from_video_data(video_array)
+    video_hash = 
         {
             url: "",
             title: video_array[0]["snippet"]["title"],
@@ -83,8 +115,10 @@ def create_hashes_from_video_data(video_data)
             description: video_array[0]["snippet"]["description"],
             thumbnail_url: video_array[0]["snippet"]["thumbnails"]["default"]["url"],
         }
-    end
 end
+
+
+# CONTINUE HERE
 
 def parse_dance_fitness_video_data(video_hashes)
     # Do the same thing but have to do it once for each query
@@ -127,8 +161,11 @@ def create_videos(parsed_video_hashes)
         dance_fitness.videos.create!(video)
     end
 end
+puts "done"
 
-fetch_and_create_videos
+# fetch_and_create_videos
+fetch_videos
+
 
 
 # sam = User.create(name: "Sam", username: "sam1", admin: false, password: "12345", password_confirmation: "12345")
