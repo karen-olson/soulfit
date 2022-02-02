@@ -16,11 +16,9 @@ class VideosController < ApplicationController
         if session[:user_id]
             current_user = User.find(session[:user_id])
             video = current_user.added_videos.create!(video_params)
-            byebug
         else
             video = Video.create!(video_params)
         end
-        byebug
         render json: video, status: :created
     end
 
