@@ -13,7 +13,14 @@ class VideosController < ApplicationController
     end
 
     def create
-        video = Video.create!(video_params)
+        if session[:user_id]
+            current_user = User.find(session[:user_id])
+            video = current_user.added_videos.create!(video_params)
+            byebug
+        else
+            video = Video.create!(video_params)
+        end
+        byebug
         render json: video, status: :created
     end
 
@@ -36,6 +43,6 @@ class VideosController < ApplicationController
     end
 
     def video_params
-        params.permit(:id, :url, :title, :channel_title, :uploaded_by_user_id, :likes, :views, :category_id, :created_at, :updated_at, :duration, :published_at, :youtube_video_id, :description, :thumbnail_url)
+        params.permit(:id, :url, :title, :channel_title, :likes, :views, :category_id, :created_at, :updated_at, :duration, :published_at, :youtube_video_id, :description, :thumbnail_url)
     end
 end

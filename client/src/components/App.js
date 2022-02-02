@@ -66,12 +66,41 @@ function App() {
     });
   }
 
+  // Credit for renameObjectKeys function to https://www.30secondsofcode.org/js/s/rename-keys and https://www.banjocode.com/post/javascript/rename-keys/
+  function renameObjectKeys(keysMap, obj) {
+    return Object.keys(obj).reduce(
+      (accumulator, key) => ({
+        ...accumulator,
+        ...{ [keysMap[key] || key]: obj[key] },
+      }),
+      {}
+    );
+  }
+
   function addVideo(video) {
-    console.log("video in addVideo: ", video);
-    // convert keys to ruby syntax
-    // send post request to /videos
-    // in /videos, check to see if a user is logged in. if so, do user_instance.video.create!... if not, do Video.create!
-    // update videos state
+    const videoWithSnakeCaseKeys = renameObjectKeys(
+      {
+        categoryId: "category_id",
+        channelTitle: "channel_title",
+        youtubeVideoId: "youtube_video_id",
+      },
+      video
+    );
+
+    const configObj = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(videoWithSnakeCaseKeys),
+    };
+
+    fetch("/videos", configObj)
+      .then((resp) => resp.json())
+      .then((video) => {
+        const updatedVideos = [...videos, video];
+        setVideos(() => updatedVideos);
+      });
   }
 
   if (!user)
