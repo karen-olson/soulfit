@@ -6,15 +6,13 @@ require 'json'
 @youtube_api_key = ENV["YOUTUBE_API_KEY"]
 @youtube_api_key_2 = ENV["YOUTUBE_API_KEY_2"]
 
-# Make a class
-# Make a call and have it seed the data
-# If you're going to seed it once, lives in the database. 
-# Add comments and put notes in readme
-# For now it's ok
+# If you're going to have users make API calls, consider making a class for it (service?)
+# To help other users understand what's going on in seeds.rb, add comments and put notes in readme
 
 # track amount of queries
 
-@count = 0
+@@category_query_count = 0
+@@video_query_count = 0
 
 @queries = [
     "dance%20fitness",
@@ -52,12 +50,11 @@ require 'json'
 def fetch_videos
     search_api_for_video_ids
     get_individual_video_data
+    parse_video_data_by_category
 end
 
 def create_videos
-    video_hashes = create_hashes_from_video_data(video_data)
-    parsed_video_hashes = parse_dance_fitness_video_data(video_hashes)
-    videos = create_videos(parsed_video_hashes)
+    # videos = create_videos(parsed_video_hashes)
 end
 
 
@@ -72,15 +69,14 @@ end
 
 def search_api_by_category(query)
     system("clear")
-    @count = @count + 1
-    puts "@count:" + @count.to_s + " - getting categories (should be 8)"
+    @@category_query_count = @@category_query_count + 1
+    puts "@@category_query_count:" + @@category_query_count.to_s + " - getting categories (should be 8)"
     category_videos = RestClient.get("https://youtube.googleapis.com/youtube/v3/search?&maxResults=10&order=viewCount&q=#{query}&relevanceLanguage=en&type=video&videoEmbeddable=true&videoSyndicated=true&key=#{@youtube_api_key}") 
     category_videos_array = JSON.parse(category_videos)["items"]
 end
 
 def get_individual_video_data
-    @video_data_by_category = @video_ids_by_category.each do |category, video_ids_array|
-        @video_data_by_category["category"]
+    @video_ids_by_category.each do |category, video_ids_array|
 
         video_ids_array.each do |id|
             video_data = search_api_for_video(id)
@@ -88,15 +84,12 @@ def get_individual_video_data
             @video_data_by_category["#{category}"] << video_hash
         end
     end
-    binding.pry
-
-    @video_data_by_category
 end
 
 def search_api_for_video(id)
     system("clear")
-    @count = @count + 1
-    puts "@count:" + @count.to_s + " - getting videos (should be 88)"
+    @@video_query_count = @@video_query_count + 1
+    puts "@@video_query_count:" + @@video_query_count.to_s + " - getting videos (should be 80)"
     raw_video_data = RestClient.get("https://youtube.googleapis.com/youtube/v3/videos?part=contentDetails&part=%20id&part=statistics&part=snippet&id=#{id}&key=#{@youtube_api_key}")
     json_formatted_video_data = JSON.parse(raw_video_data)["items"]
 end
@@ -120,24 +113,43 @@ end
 
 # CONTINUE HERE
 
-def parse_dance_fitness_video_data(video_hashes)
-    # Do the same thing but have to do it once for each query
+def parse_video_data_by_category
+    @video_data_by_category.each do |category, videos_array|
 
-    parsed_video_hashes = video_hashes.map do |video|
-        duration_in_seconds = convert_video_duration_to_seconds(video[:duration])
-        video[:duration] = duration_in_seconds
-        
-        url = convert_video_id_to_url(video[:youtube_video_id])
-        video[:url] = url
-        
-        video
+        videos_array.map do |video|
+            if video[:duration]
+                # NoMethodError: undefined method `[]' for nil:NilClass
+# /Users/karen/Development/code/Mod4/soulfit/db/seeds.rb:146:in `convert_video_duration_to_seconds'
+                duration_in_seconds = convert_video_duration_to_seconds(video[:duration])
+                video[:duration] = duration_in_seconds
+            else 
+                video[:duration] = 0
+            end
+
+            url = convert_video_id_to_url(video[:youtube_video_id])
+            video[:url] = url
+            
+            video
+        end
     end
+    binding.pry
+
+    @video_data_by_category
 end
 
 def convert_video_duration_to_seconds(duration_string)
+
+    # NoMethodError: undefined method `[]' for nil:NilClass
+# /Users/karen/Development/code/Mod4/soulfit/db/seeds.rb:146:in `convert_video_duration_to_seconds'
     minutes_string_with_m = duration_string.match(/\d*M/)
     if minutes_string_with_m
-        minutes = minutes_string_with_m[0].match(/\d*/).to_s.to_i
+        system("clear")
+        puts minutes_string_with_m
+        # printed 3M
+        # minutes = minutes_string_with_m[0].match(/\d*/).to_s.to_i
+        # took out [0] and then reached quota... womp womp.
+        minutes = minutes_string_with_m.match(/\d*/).to_s.to_i
+        puts "minutes " + minutes
     else
         minutes = 0
     end
@@ -152,7 +164,7 @@ def convert_video_id_to_url(video_id)
     "https://www.youtube.com/watch?v=#{video_id}"
 end
 
-def create_videos(parsed_video_hashes)
+def create_video_objects(parsed_video_hashes)
     # Do the same thing but have to do it once for each query
     # need to convert query into category name
 
@@ -161,10 +173,11 @@ def create_videos(parsed_video_hashes)
         dance_fitness.videos.create!(video)
     end
 end
-puts "done"
+# puts "done"
 
 # fetch_and_create_videos
 fetch_videos
+# create_videos
 
 
 
