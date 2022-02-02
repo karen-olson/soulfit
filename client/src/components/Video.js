@@ -23,7 +23,7 @@ const Video = ({ videos }) => {
             <Typography pt={3} variant="h5">
               {video.title}
             </Typography>
-            <Typography variant="h6">{video.channel_title}</Typography>
+            <Typography variant="h6">{video.channelTitle}</Typography>
             <Typography>
               {video.views} views | {video.likes} likes
             </Typography>

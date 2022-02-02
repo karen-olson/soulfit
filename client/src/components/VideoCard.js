@@ -12,12 +12,12 @@ const VideoCard = ({ video }) => {
     <>
       <ImageListItem key={video.id} sx={{ width: "15vw", height: "auto" }}>
         <img
-          src={video.thumbnail_url}
+          src={video.thumbnailUrl}
           alt={`Thumbnail for ${video.title}`}
           onClick={handleVideoThumbnailClick}
         />
         <Typography fontSize={"small"}>{video.title}</Typography>
-        <Typography>{video.channel_title}</Typography>
+        <Typography>{video.channelTitle}</Typography>
         <Typography fontSize={"small"}>
           {video.views} views | {video.likes} likes
         </Typography>
