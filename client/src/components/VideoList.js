@@ -4,15 +4,15 @@ import { Box } from "@mui/system";
 import { ImageList } from "@mui/material";
 import { useParams } from "react-router-dom";
 
-const VideoList = ({ videos }) => {
+const VideoList = ({ videos, user }) => {
   const params = useParams();
 
   const videosFilteredByCategory = videos.filter(
-    (video) => video.category.id === parseInt(params.id)
+    (video) => video.categoryId === parseInt(params.id)
   );
 
   const videoCards = videosFilteredByCategory.map((video) => (
-    <VideoCard video={video} key={video.id} />
+    <VideoCard video={video} key={video.id} user={user} />
   ));
 
   return (
