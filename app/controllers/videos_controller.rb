@@ -1,6 +1,6 @@
 class VideosController < ApplicationController
     # remove this later
-    skip_before_action :authorize, only: :index
+    skip_before_action :authorize, only: [:index, :create]
 
     def index
         videos = Video.all
@@ -13,6 +13,7 @@ class VideosController < ApplicationController
     end
 
     def create
+        byebug
         if session[:user_id]
             current_user = User.find(session[:user_id])
             video = current_user.added_videos.create!(video_params)
