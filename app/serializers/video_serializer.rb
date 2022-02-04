@@ -1,7 +1,6 @@
 class VideoSerializer < ActiveModel::Serializer
   attributes :id, :url, :title, :channelTitle, :likes, :views, :categoryId, :createdAt, :updatedAt, :duration, :publishedAt, :youtubeVideoId, :description, :thumbnailUrl
-  has_one :category
-  has_one :videoAddedByUser
+  has_one :videoAddedByUser, serializer: VideoAddedByUserSerializer
 
   def channelTitle 
     self.object.channel_title
