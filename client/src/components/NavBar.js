@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { Box, Tabs, Tab, Button, Typography } from "@mui/material";
+import { Box, Tabs, Tab, Button } from "@mui/material";
 import SoulFitIconWithCircle from "../SoulFitIconWithCircle.png";
 
 const NavBar = ({ setUser }) => {
@@ -18,8 +18,9 @@ const NavBar = ({ setUser }) => {
           icon={<img src={SoulFitIconWithCircle} style={{ height: "45px" }} />}
           component={NavLink}
           to="/"
-          sx={{ mr: "2vw" }}
+          sx={{ mr: "0vw" }}
         />
+        <Tab component={NavLink} label="Explore" to="/" sx={{ mr: "2vw" }} />
         <Tab
           component={NavLink}
           label="Favorites"
