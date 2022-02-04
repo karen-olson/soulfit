@@ -1,8 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { Box } from "@mui/material";
-import { Tabs } from "@mui/material";
-import { Tab } from "@mui/material";
-import { Button } from "@mui/material";
+import { Box, Tabs, Tab, Button, Typography } from "@mui/material";
 import SoulFitIconWithCircle from "../SoulFitIconWithCircle.png";
 
 const NavBar = ({ setUser }) => {
@@ -21,9 +18,31 @@ const NavBar = ({ setUser }) => {
           icon={<img src={SoulFitIconWithCircle} style={{ height: "45px" }} />}
           component={NavLink}
           to="/"
-          sx={{ p: 0 }}
+          sx={{ mr: "2vw" }}
         />
-        <Button onClick={handleLogoutClick} variant="contained">
+        <Tab
+          component={NavLink}
+          label="Favorites"
+          to="/videos/favorites"
+          sx={{ mr: "2vw" }}
+        />
+        <Tab
+          component={NavLink}
+          label="My Uploads"
+          to="/videos/my_videos"
+          sx={{ mr: "2vw" }}
+        />
+        <Tab
+          component={NavLink}
+          label="Add a Video"
+          to="/videos/new"
+          sx={{ mr: "2vw" }}
+        />
+        <Button
+          onClick={handleLogoutClick}
+          variant="contained"
+          sx={{ mt: 1, mb: 2, pt: 0, pb: 0 }}
+        >
           Log Out
         </Button>
       </Tabs>

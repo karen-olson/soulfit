@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, useHistory } from "react-router-dom";
 import SignUpForm from "./SignUpForm";
 import LogInForm from "./LogInForm";
 import NavBar from "./NavBar";
 import AuthPage from "./AuthPage";
 import CategoryList from "./CategoryList";
 import VideoList from "./VideoList";
+import MyVideosList from "./MyVideosList";
 import Video from "./Video";
-import HomePage from "./HomePage";
 import VideoForm from "./VideoForm";
 import { Paper } from "@mui/material";
 
@@ -17,6 +17,8 @@ function App() {
   const [currentCategory, setCurrentCategory] = useState(0);
   const [videos, setVideos] = useState([]);
   // const [users, setUsers] = useState([]);
+
+  const history = useHistory();
 
   useEffect(() => {
     fetch("/me").then((resp) => {
@@ -42,6 +44,11 @@ function App() {
     user["password_confirmation"] = user["passwordConfirmation"];
     delete user["passwordConfirmation"];
     return user;
+  }
+
+  function onLogin(user) {
+    setUser(user);
+    history.push("/");
   }
 
   function createUser(newUser) {
@@ -103,11 +110,35 @@ function App() {
       });
   }
 
+  function editVideo(video) {
+    // const videoWithSnakeCaseKeys = renameObjectKeys(
+    //   {
+    //     categoryId: "category_id",
+    //     channelTitle: "channel_title",
+    //     youtubeVideoId: "youtube_video_id",
+    //   },
+    //   video
+    // );
+    // const configObj = {
+    //   method: "PATCH",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify(videoWithSnakeCaseKeys),
+    // };
+    // fetch("/videos", configObj)
+    //   .then((resp) => resp.json())
+    //   .then((video) => {
+    //     const updatedVideos = [...videos, video];
+    //     setVideos(() => updatedVideos);
+    //   });
+  }
+
   if (!user)
     return (
       <>
         <Paper sx={{ height: "100vh", width: "100vw" }}>
-          <AuthPage onLogin={setUser} createUser={createUser} />
+          <AuthPage onLogin={onLogin} createUser={createUser} />
         </Paper>
       </>
     );
@@ -120,16 +151,10 @@ function App() {
           <SignUpForm createUser={createUser} />
         </Route>
         <Route path="/signin">
-          <LogInForm onLogin={setUser} />
+          <LogInForm onLogin={onLogin} />
         </Route>
         <Route path={`/categories/:id/videos`}>
-          <VideoList videos={videos} />
-        </Route>
-        <Route path="/categories">
-          <CategoryList
-            categories={categories}
-            onCategorySelect={setCurrentCategory}
-          />
+          <VideoList videos={videos} user={user} />
         </Route>
         <Route path="/videos/new">
           <VideoForm
@@ -138,11 +163,28 @@ function App() {
             onSubmitVideo={addVideo}
           />
         </Route>
+        <Route path="/videos/favorites">
+          <h1>My Favorites</h1>
+        </Route>
+        {/* <Route path="/videos/my_videos"> */}
+        <Route path="/videos/my_videos">
+          <MyVideosList videos={videos} user={user} />
+        </Route>
+        <Route path="/videos/:id/edit">
+          <VideoForm
+            videos={videos}
+            categories={categories}
+            onSubmitVideo={editVideo}
+          />
+        </Route>
         <Route path="/videos/:id">
           <Video videos={videos} />
         </Route>
         <Route path="/">
-          <HomePage />
+          <CategoryList
+            categories={categories}
+            onCategorySelect={setCurrentCategory}
+          />
         </Route>
       </Switch>
     </>
