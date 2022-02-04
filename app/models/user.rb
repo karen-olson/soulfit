@@ -4,6 +4,9 @@ class User < ApplicationRecord
     has_many :user_added_videos, dependent: :destroy
     has_many :added_videos, through: :user_added_videos
 
+    has_many :user_saved_videos, dependent: :destroy 
+    has_many :saved_videos, through: :user_saved_videos
+
     ##### need to alias "videos" after the second association between user and video is added
 
     validates :username, presence: true, uniqueness: true

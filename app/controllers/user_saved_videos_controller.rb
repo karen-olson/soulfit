@@ -1,26 +1,26 @@
-class UserAddedVideosController < ApplicationController
+class UserSavedVideosController < ApplicationController
     skip_before_action :authorize
     # remove this!!
 
     def index
-        videos = UserAddedVideo.all 
+        videos = UserSavedVideo.all 
         render json: videos
     end
         
     def create
-        video = UserAddedVideo.create!(user_added_video_params)
+        video = UserSavedVideo.create!(user_saved_video_params)
         render json: video, status: :created
     end
 
     def destroy
-        video = UserAddedVideo.find(params[:id])
+        video = UserSavedVideo.find(params[:id])
         video.destroy
         head: :no_content
     end
 
     private
 
-    def user_added_video_params
+    def user_saved_video_params
         params.permit(:id, :video_id, :user_id)
     end
 end
