@@ -11,19 +11,23 @@ const CategoryCard = ({ category, onCategorySelect }) => {
     history.push(`/categories/${category.id}/videos`);
   }
 
-  return (
-    <>
-      <ImageListItem key={category.id}>
-        <img
-          src={`${category.img_url}?h=700&fit=crop&auto=format`}
-          alt={category.title}
-          loading="lazy"
-          onClick={handleCategoryImageClick}
-        />
-        <ImageListItemBar title={category.name} />
-      </ImageListItem>
-    </>
-  );
+  if (category) {
+    return (
+      <>
+        <ImageListItem key={category.id}>
+          <img
+            src={`${category.img_url}?h=700&fit=crop&auto=format`}
+            alt={category.title}
+            loading="lazy"
+            onClick={handleCategoryImageClick}
+          />
+          <ImageListItemBar title={category.name} />
+        </ImageListItem>
+      </>
+    );
+  } else {
+    return <h1>Loading</h1>;
+  }
 };
 
 export default CategoryCard;

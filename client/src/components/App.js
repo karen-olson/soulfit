@@ -10,6 +10,7 @@ import MyVideosList from "./MyVideosList";
 import Video from "./Video";
 import VideoForm from "./VideoForm";
 import { Paper } from "@mui/material";
+import FavoriteVideosPage from "./FavoriteVideosPage";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -110,6 +111,12 @@ function App() {
       });
   }
 
+  function updateFavoriteVideos(user, video) {
+    // use renameObjectKeys to make keys snake case
+    // make a patch request to user_saved_videos (returns user id and video id, or nothing for delete??)
+    // update user state (how?)
+  }
+
   function editVideo(video) {
     // const videoWithSnakeCaseKeys = renameObjectKeys(
     //   {
@@ -143,52 +150,65 @@ function App() {
       </>
     );
 
-  return (
-    <>
-      <NavBar setUser={setUser} />
-      <Switch>
-        <Route path="/signup">
-          <SignUpForm createUser={createUser} />
-        </Route>
-        <Route path="/signin">
-          <LogInForm onLogin={onLogin} />
-        </Route>
-        <Route path={`/categories/:id/videos`}>
-          <VideoList videos={videos} user={user} />
-        </Route>
-        <Route path="/videos/new">
-          <VideoForm
-            videos={videos}
-            categories={categories}
-            onSubmitVideo={addVideo}
-          />
-        </Route>
-        <Route path="/videos/favorites">
-          <h1>My Favorites</h1>
-        </Route>
-        {/* <Route path="/videos/my_videos"> */}
-        <Route path="/videos/my_videos">
-          <MyVideosList videos={videos} user={user} />
-        </Route>
-        <Route path="/videos/:id/edit">
-          <VideoForm
-            videos={videos}
-            categories={categories}
-            onSubmitVideo={editVideo}
-          />
-        </Route>
-        <Route path="/videos/:id">
-          <Video videos={videos} />
-        </Route>
-        <Route path="/">
-          <CategoryList
-            categories={categories}
-            onCategorySelect={setCurrentCategory}
-          />
-        </Route>
-      </Switch>
-    </>
-  );
+  if (videos.length > 0 && user) {
+    return (
+      <>
+        <NavBar setUser={setUser} />
+        <Switch>
+          <Route path="/signup">
+            <SignUpForm createUser={createUser} />
+          </Route>
+          <Route path="/signin">
+            <LogInForm onLogin={onLogin} />
+          </Route>
+          <Route path={`/categories/:id/videos`}>
+            <VideoList
+              videos={videos}
+              user={user}
+              updateFavoriteVideos={updateFavoriteVideos}
+            />
+          </Route>
+          <Route path="/videos/new">
+            <VideoForm
+              videos={videos}
+              categories={categories}
+              onSubmitVideo={addVideo}
+            />
+          </Route>
+          <Route path="/videos/favorites">
+            <FavoriteVideosPage
+              categories={categories}
+              videos={videos}
+              user={user}
+              setUser={setUser}
+              updateFavoriteVideos={updateFavoriteVideos}
+            />
+          </Route>
+          <Route path="/videos/my_videos">
+            <MyVideosList videos={videos} user={user} />
+          </Route>
+          <Route path="/videos/:id/edit">
+            <VideoForm
+              videos={videos}
+              categories={categories}
+              onSubmitVideo={editVideo}
+            />
+          </Route>
+          <Route path="/videos/:id">
+            <Video videos={videos} />
+          </Route>
+          <Route path="/">
+            <CategoryList
+              categories={categories}
+              onCategorySelect={setCurrentCategory}
+            />
+          </Route>
+        </Switch>
+      </>
+    );
+  } else {
+    return <h1>Loading</h1>;
+  }
 }
 
 export default App;

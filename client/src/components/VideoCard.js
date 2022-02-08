@@ -12,11 +12,19 @@ import {
   IconButton,
 } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-const VideoCard = ({ video, user }) => {
+const VideoCard = ({ video, user, updateFavoriteVideos }) => {
+  const myFavoriteVideoIds = user.user_saved_videos.map(
+    (video) => video.video_id
+  );
+
   const [showEditDeleteButtons, setShowEditDeleteButtons] = useState(false);
+  const [isFavorited, setIsFavorited] = useState(
+    myFavoriteVideoIds.includes(video.id)
+  );
 
   const history = useHistory();
   const location = useLocation();
@@ -32,7 +40,12 @@ const VideoCard = ({ video, user }) => {
   }
 
   function handleFavoriteClick(e) {
-    console.log(e);
+    // x create state to tell whether this video is favorited or not
+    // x if the video is favorited, render a full heart. if not, render an empty heart?
+    // update the database
+    // x reverse isFavorited
+    updateFavoriteVideos(user, video);
+    setIsFavorited(() => !isFavorited);
   }
 
   function handleEditClick(e) {
@@ -43,70 +56,74 @@ const VideoCard = ({ video, user }) => {
     console.log(e);
   }
 
-  return (
-    <>
-      <ImageListItem key={video.id} sx={{ width: "15vw", height: "auto" }}>
-        <Card
-          sx={{
-            maxWidth: 345,
-            height: "38vh",
-            maxHeight: 345,
-            backgroundColor: "#535658",
-          }}
-        >
-          <CardActionArea onClick={handleVideoThumbnailClick}>
-            <CardMedia
-              component="img"
-              height="140"
-              image={video.thumbnailUrl}
-              alt={`Thumbnail for ${video.title}`}
-            />
-            <CardHeader
-              title={video.title.slice(0, 50) + "..."}
-              subheader={video.channelTitle}
-              titleTypographyProps={{ variant: "subtitle1", maxHeight: 80 }}
-            />
-            <CardContent>
-              <Typography fontSize={"small"} sx={{ mt: -3 }}>
-                {video.views} views | {video.likes} likes
-              </Typography>
-            </CardContent>
-          </CardActionArea>
-          <CardActions sx={{ mt: -3 }}>
-            <IconButton
-              aria-label="add to favorites"
-              size="small"
-              color="primary"
-              onClick={handleFavoriteClick}
-            >
-              <FavoriteIcon />
-            </IconButton>
-            {/* WHY INFINITE LOOP??? */}
-            {showEditDeleteButtons && (
-              <>
-                <IconButton
-                  aria-label="edit video"
-                  size="small"
-                  color="secondary"
-                  onClick={handleEditClick}
-                >
-                  <EditIcon />
-                </IconButton>
-                <IconButton
-                  aria-label="delete video"
-                  size="small"
-                  color="secondary"
-                  onClick={handleDeleteClick}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </>
-            )}
-          </CardActions>
-        </Card>
-      </ImageListItem>
-    </>
-  );
+  if (video && user) {
+    return (
+      <>
+        <ImageListItem key={video.id} sx={{ width: "15vw", height: "auto" }}>
+          <Card
+            sx={{
+              maxWidth: 345,
+              height: "38vh",
+              maxHeight: 345,
+              backgroundColor: "#535658",
+            }}
+          >
+            <CardActionArea onClick={handleVideoThumbnailClick}>
+              <CardMedia
+                component="img"
+                height="140"
+                image={video.thumbnailUrl}
+                alt={`Thumbnail for ${video.title}`}
+              />
+              <CardHeader
+                title={video.title.slice(0, 50) + "..."}
+                subheader={video.channelTitle}
+                titleTypographyProps={{ variant: "subtitle1", maxHeight: 80 }}
+              />
+              <CardContent>
+                <Typography fontSize={"small"} sx={{ mt: -3 }}>
+                  {video.views} views | {video.likes} likes
+                </Typography>
+              </CardContent>
+            </CardActionArea>
+            <CardActions sx={{ mt: -3 }}>
+              <IconButton
+                aria-label="add to favorites"
+                size="small"
+                color="primary"
+                onClick={handleFavoriteClick}
+              >
+                {isFavorited ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+              </IconButton>
+              {/* WHY INFINITE LOOP??? */}
+              {showEditDeleteButtons && (
+                <>
+                  <IconButton
+                    aria-label="edit video"
+                    size="small"
+                    color="secondary"
+                    onClick={handleEditClick}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton
+                    aria-label="delete video"
+                    size="small"
+                    color="secondary"
+                    onClick={handleDeleteClick}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </>
+              )}
+            </CardActions>
+          </Card>
+        </ImageListItem>
+      </>
+    );
+  } else {
+    return <h1>Loading</h1>;
+  }
 };
 
 export default VideoCard;

@@ -12,19 +12,23 @@ const CategoryList = ({ categories, onCategorySelect }) => {
     />
   ));
 
-  return (
-    <Container maxWidth="xl">
-      <Box
-        centered
-        pt={4}
-        sx={{ width: "auto", height: "100vh", pt: "5vh", pb: "10vh" }}
-      >
-        <ImageList cols={4} gap={6}>
-          {categoryCards}
-        </ImageList>
-      </Box>
-    </Container>
-  );
+  if (categories.length > 0) {
+    return (
+      <Container maxWidth="xl">
+        <Box
+          centered
+          pt={4}
+          sx={{ width: "auto", height: "100vh", pt: "5vh", pb: "10vh" }}
+        >
+          <ImageList cols={4} gap={6}>
+            {categoryCards}
+          </ImageList>
+        </Box>
+      </Container>
+    );
+  } else {
+    return <h1>Loading</h1>;
+  }
 };
 
 export default CategoryList;

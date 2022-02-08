@@ -1,17 +1,16 @@
 import VideoCard from "./VideoCard";
-import { Container } from "@mui/material";
-import { Box } from "@mui/system";
-import { ImageList } from "@mui/material";
-import { useParams } from "react-router-dom";
+import { Container, Box, ImageList } from "@mui/material";
 
-const VideoList = ({ videos, user, updateFavoriteVideos }) => {
-  const params = useParams();
-
-  const videosFilteredByCategory = videos.filter(
-    (video) => video.categoryId === parseInt(params.id)
+const FavoriteVideosList = ({ videos, user, updateFavoriteVideos }) => {
+  const myFavoriteVideoIds = user.user_saved_videos.map(
+    (video) => video.video_id
   );
 
-  const videoCards = videosFilteredByCategory.map((video) => (
+  const myFavoriteVideos = myFavoriteVideoIds.map((id) =>
+    videos.find((video) => video.id === id)
+  );
+
+  const videoCards = myFavoriteVideos.map((video) => (
     <VideoCard
       video={video}
       key={video.id}
@@ -38,4 +37,4 @@ const VideoList = ({ videos, user, updateFavoriteVideos }) => {
   }
 };
 
-export default VideoList;
+export default FavoriteVideosList;
