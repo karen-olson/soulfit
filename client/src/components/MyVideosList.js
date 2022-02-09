@@ -3,7 +3,7 @@ import { Container } from "@mui/material";
 import { Box } from "@mui/system";
 import { ImageList } from "@mui/material";
 
-const MyVideosList = ({ videos, user }) => {
+const MyVideosList = ({ videos, user, updateFavoriteVideos }) => {
   const userAddedVideos = videos.filter((video) => video.videoAddedByUser);
 
   const myAddedVideos = userAddedVideos.filter(
@@ -11,7 +11,12 @@ const MyVideosList = ({ videos, user }) => {
   );
 
   const videoCards = myAddedVideos.map((video) => (
-    <VideoCard video={video} key={video.id} user={user} />
+    <VideoCard
+      video={video}
+      key={video.id}
+      user={user}
+      updateFavoriteVideos={updateFavoriteVideos}
+    />
   ));
 
   if (videos.length > 0 && user) {

@@ -2,8 +2,8 @@ Rails.application.routes.draw do
   post "/login", to: "sessions#create"
   get "/me", to: "users#show"
   delete "/logout", to: "sessions#destroy"
+  resources :user_saved_videos
   resources :user_added_videos, only: [:index, :create, :destroy]
-  resources :user_saved_videos, only: [:index, :create, :destroy]
   resources :categories
   resources :users
   resources :videos

@@ -44,7 +44,7 @@ const VideoCard = ({ video, user, updateFavoriteVideos }) => {
     // x if the video is favorited, render a full heart. if not, render an empty heart?
     // update the database
     // x reverse isFavorited
-    updateFavoriteVideos(user, video);
+    updateFavoriteVideos(user, video, isFavorited);
     setIsFavorited(() => !isFavorited);
   }
 
@@ -63,9 +63,10 @@ const VideoCard = ({ video, user, updateFavoriteVideos }) => {
           <Card
             sx={{
               maxWidth: 345,
-              height: "38vh",
-              maxHeight: 345,
+              height: "auto",
+              maxHeight: "auto",
               backgroundColor: "#535658",
+              mb: "2vh",
             }}
           >
             <CardActionArea onClick={handleVideoThumbnailClick}>
@@ -95,7 +96,6 @@ const VideoCard = ({ video, user, updateFavoriteVideos }) => {
               >
                 {isFavorited ? <FavoriteIcon /> : <FavoriteBorderIcon />}
               </IconButton>
-              {/* WHY INFINITE LOOP??? */}
               {showEditDeleteButtons && (
                 <>
                   <IconButton

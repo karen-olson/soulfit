@@ -15,7 +15,7 @@ class UserSavedVideosController < ApplicationController
     def destroy
         video = UserSavedVideo.find(params[:id])
         video.destroy
-        head: :no_content
+        head :no_content
     end
 
     private

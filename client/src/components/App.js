@@ -17,6 +17,7 @@ function App() {
   const [categories, setCategories] = useState([]);
   const [currentCategory, setCurrentCategory] = useState(0);
   const [videos, setVideos] = useState([]);
+  const [userFavoritedVideos, setUserFavoritedVideos] = useState([]);
   // const [users, setUsers] = useState([]);
 
   const history = useHistory();
@@ -39,6 +40,14 @@ function App() {
     fetch("/videos")
       .then((resp) => resp.json())
       .then((videos) => setVideos(videos));
+  }, []);
+
+  useEffect(() => {
+    fetch("/user_saved_videos")
+      .then((resp) => resp.json())
+      .then((userFavoritedVideos) =>
+        setUserFavoritedVideos(userFavoritedVideos)
+      );
   }, []);
 
   function changePasswordConfirmationCase(user) {
@@ -111,10 +120,58 @@ function App() {
       });
   }
 
-  function updateFavoriteVideos(user, video) {
-    // use renameObjectKeys to make keys snake case
-    // make a patch request to user_saved_videos (returns user id and video id, or nothing for delete??)
-    // update user state (how?)
+  function unfavoriteVideo(userVideo) {
+    const configObj = {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userVideo),
+    };
+
+    fetch(`/user_saved_videos/${userVideo.id}`, configObj).then((resp) => {
+      if (resp.ok) {
+        const updatedUserFavoritedVideos = userFavoritedVideos.filter(
+          (userFavoritedVideo) => userFavoritedVideo.id !== userVideo.id
+        );
+        setUserFavoritedVideos(updatedUserFavoritedVideos);
+      }
+    });
+  }
+
+  function favoriteVideo(user, video) {
+    const configObj = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        user_id: user.id,
+        video_id: video.id,
+      }),
+    };
+
+    fetch(`/user_saved_videos`, configObj)
+      .then((resp) => resp.json())
+      .then((favoriteVideo) =>
+        setUserFavoritedVideos(() => [...userFavoritedVideos, favoriteVideo])
+      );
+  }
+
+  function updateFavoriteVideos(user, video, isFavorited) {
+    const userVideo = userFavoritedVideos.find(
+      (userFavoritedVideo) =>
+        user.id === userFavoritedVideo.user_id &&
+        video.id === userFavoritedVideo.video_id
+    );
+
+    // Why aren't videos being added/removed from favorite video list page until a refresh?
+    // Shouldn't the whole app be re-rendering when userFavoritedVideos is updated?
+    if (isFavorited) {
+      unfavoriteVideo(userVideo);
+    } else {
+      favoriteVideo(user, video);
+    }
   }
 
   function editVideo(video) {
@@ -185,7 +242,11 @@ function App() {
             />
           </Route>
           <Route path="/videos/my_videos">
-            <MyVideosList videos={videos} user={user} />
+            <MyVideosList
+              videos={videos}
+              user={user}
+              updateFavoriteVideos={updateFavoriteVideos}
+            />
           </Route>
           <Route path="/videos/:id/edit">
             <VideoForm
