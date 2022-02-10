@@ -1,16 +1,25 @@
 import VideoCard from "./VideoCard";
 import { Container, Box, ImageList } from "@mui/material";
 
-const FavoriteVideosList = ({ videos, user, updateFavoriteVideos }) => {
-  const myFavoriteVideoIds = user.user_saved_videos.map(
+const FavoriteVideosList = ({
+  videos,
+  user,
+  currentCategoryId,
+  updateFavoriteVideos,
+}) => {
+  const favoriteVideoIds = user.user_saved_videos.map(
     (video) => video.video_id
   );
 
-  const myFavoriteVideos = myFavoriteVideoIds.map((id) =>
+  const favoriteVideos = favoriteVideoIds.map((id) =>
     videos.find((video) => video.id === id)
   );
 
-  const videoCards = myFavoriteVideos.map((video) => (
+  const favoriteVideosByCategory = favoriteVideos.filter(
+    (video) => video.categoryId === currentCategoryId
+  );
+
+  const videoCards = favoriteVideosByCategory.map((video) => (
     <VideoCard
       video={video}
       key={video.id}
@@ -19,7 +28,7 @@ const FavoriteVideosList = ({ videos, user, updateFavoriteVideos }) => {
     />
   ));
 
-  if (videos.length > 0 && user) {
+  if (videos.length > 0 && currentCategoryId && user) {
     return (
       <Container maxWidth="xl">
         <Box
