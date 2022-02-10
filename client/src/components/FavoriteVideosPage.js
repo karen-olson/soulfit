@@ -21,11 +21,25 @@ const FavoriteVideosPage = ({
   setUser,
   updateFavoriteVideos,
 }) => {
-  const [currentCategoryId, setCurrentCategoryId] = useState(categories[0].id);
+  const [currentCategoryId, setCurrentCategoryId] = useState(
+    parseInt(categories[0].id)
+  );
 
   function handleCategoryButtonClick(e) {
-    setCurrentCategoryId(e.target.id);
+    setCurrentCategoryId(parseInt(e.target.id));
   }
+
+  const favoriteVideoIds = user.user_saved_videos.map(
+    (video) => video.video_id
+  );
+
+  const favoriteVideos = favoriteVideoIds.map((id) =>
+    videos.find((video) => video.id === id)
+  );
+
+  const currentCategoryFavoriteVideos = favoriteVideos.filter(
+    (favoriteVideo) => favoriteVideo.categoryId === currentCategoryId
+  );
 
   if (videos.length > 0 && categories.length > 0 && user) {
     return (
@@ -67,15 +81,18 @@ const FavoriteVideosPage = ({
             </List>
           </Box>
         </Drawer>
-        <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-          <Toolbar />
+        {/* <Box component="main" sx={{ flexGrow: 1, p: 3 }}> */}
+        <Toolbar />
+        {currentCategoryFavoriteVideos.length > 0 ? (
           <FavoriteVideosList
-            videos={videos}
+            currentCategoryFavoriteVideos={currentCategoryFavoriteVideos}
             user={user}
-            currentCategoryId={currentCategoryId}
             updateFavoriteVideos={updateFavoriteVideos}
           />
-        </Box>
+        ) : (
+          <h1>Choose Explore to add videos.</h1>
+        )}
+        {/* </Box> */}
       </Box>
     );
   } else {

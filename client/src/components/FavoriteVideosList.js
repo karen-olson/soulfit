@@ -2,24 +2,11 @@ import VideoCard from "./VideoCard";
 import { Container, Box, ImageList } from "@mui/material";
 
 const FavoriteVideosList = ({
-  videos,
+  currentCategoryFavoriteVideos,
   user,
-  currentCategoryId,
   updateFavoriteVideos,
 }) => {
-  const favoriteVideoIds = user.user_saved_videos.map(
-    (video) => video.video_id
-  );
-
-  const favoriteVideos = favoriteVideoIds.map((id) =>
-    videos.find((video) => video.id === id)
-  );
-
-  const favoriteVideosByCategory = favoriteVideos.filter(
-    (video) => video.categoryId === currentCategoryId
-  );
-
-  const videoCards = favoriteVideosByCategory.map((video) => (
+  const videoCards = currentCategoryFavoriteVideos.map((video) => (
     <VideoCard
       video={video}
       key={video.id}
@@ -28,12 +15,18 @@ const FavoriteVideosList = ({
     />
   ));
 
-  if (videos.length > 0 && currentCategoryId && user) {
+  if (currentCategoryFavoriteVideos.length > 0 && user) {
     return (
       <Container maxWidth="xl">
         <Box
           centered
-          sx={{ width: "80vw", height: "100vh", pt: "5vh", pb: "10vh" }}
+          sx={{
+            width: "80vw",
+            height: "100vh",
+            pt: "5vh",
+            pr: "10vw",
+            pb: "10vh",
+          }}
         >
           <ImageList cols={5} gap={"auto"}>
             {videoCards}
@@ -42,7 +35,7 @@ const FavoriteVideosList = ({
       </Container>
     );
   } else {
-    return <h1>Loading</h1>;
+    return <h1>No favorite videos for this category</h1>;
   }
 };
 
