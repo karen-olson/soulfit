@@ -39,7 +39,7 @@ const VideoCard = ({ video, user, updateFavoriteVideos }) => {
     history.push(`/videos/${video.id}`);
   }
 
-  function handleFavoriteClick(e) {
+  function handleFavoriteClick() {
     // x create state to tell whether this video is favorited or not
     // x if the video is favorited, render a full heart. if not, render an empty heart?
     // update the database
@@ -48,8 +48,8 @@ const VideoCard = ({ video, user, updateFavoriteVideos }) => {
     setIsFavorited(() => !isFavorited);
   }
 
-  function handleEditClick(e) {
-    console.log(e);
+  function handleEditClick() {
+    history.push(`/videos/${video.id}/edit`);
   }
 
   function handleDeleteClick(e) {

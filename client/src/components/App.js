@@ -15,10 +15,9 @@ import FavoriteVideosPage from "./FavoriteVideosPage";
 function App() {
   const [user, setUser] = useState(null);
   const [categories, setCategories] = useState([]);
-  const [currentCategory, setCurrentCategory] = useState(0);
+  const [category, setCategory] = useState(null);
   const [videos, setVideos] = useState([]);
   const [userFavoritedVideos, setUserFavoritedVideos] = useState([]);
-  // const [users, setUsers] = useState([]);
 
   const history = useHistory();
 
@@ -75,9 +74,9 @@ function App() {
     fetch("/users", configObj).then((resp) => {
       if (resp.ok) {
         resp.json().then((newUser) => {
-          // const updatedUsers = [...users, newUser];
-          // setUsers(updatedUsers);
+          console.log(newUser);
           // log user in?
+          // confirmation page?
         });
       }
     });
@@ -174,28 +173,46 @@ function App() {
     }
   }
 
-  function editVideo(video) {
-    // const videoWithSnakeCaseKeys = renameObjectKeys(
-    //   {
-    //     categoryId: "category_id",
-    //     channelTitle: "channel_title",
-    //     youtubeVideoId: "youtube_video_id",
-    //   },
-    //   video
-    // );
-    // const configObj = {
-    //   method: "PATCH",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(videoWithSnakeCaseKeys),
-    // };
-    // fetch("/videos", configObj)
-    //   .then((resp) => resp.json())
-    //   .then((video) => {
-    //     const updatedVideos = [...videos, video];
-    //     setVideos(() => updatedVideos);
-    //   });
+  function editVideo(updatedVideoData, videoToEdit) {
+    const updatedVideo = {
+      ...updatedVideoData,
+      createdAt: videoToEdit.createdAt,
+      updatedAt: videoToEdit.updatedAt,
+      publishedAt: videoToEdit.publishedAt,
+      videoAddedByUser: videoToEdit.videoAddedByUser,
+    };
+
+    const updatedVideoWithSnakeCaseKeys = renameObjectKeys(
+      {
+        categoryId: "category_id",
+        channelTitle: "channel_title",
+        youtubeVideoId: "youtube_video_id",
+        createdAt: "created_at",
+        updatedAt: "updated_at",
+        publishedAt: "published_at",
+        videoAddedByUser: "video_added_by_user",
+      },
+      updatedVideo
+    );
+
+    const configObj = {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedVideoWithSnakeCaseKeys),
+    };
+
+    fetch(`/videos/${videoToEdit.id}`, configObj)
+      .then((resp) => {
+        if (resp.ok) {
+          resp.json();
+        }
+      })
+      .then((video) => {
+        const updatedVideos = [...videos, video];
+        setVideos(() => updatedVideos);
+      });
   }
 
   if (!user)
@@ -218,21 +235,21 @@ function App() {
           <Route path="/signin">
             <LogInForm onLogin={onLogin} />
           </Route>
-          <Route path={`/categories/:id/videos`}>
+          <Route exact path="/categories/:id/videos">
             <VideoList
               videos={videos}
               user={user}
               updateFavoriteVideos={updateFavoriteVideos}
             />
           </Route>
-          <Route path="/videos/new">
+          <Route exact path="/videos/new">
             <VideoForm
               videos={videos}
               categories={categories}
               onSubmitVideo={addVideo}
             />
           </Route>
-          <Route path="/videos/favorites">
+          <Route exact path="/videos/favorites">
             <FavoriteVideosPage
               categories={categories}
               videos={videos}
@@ -241,27 +258,27 @@ function App() {
               updateFavoriteVideos={updateFavoriteVideos}
             />
           </Route>
-          <Route path="/videos/my_videos">
+          <Route exact path="/videos/my_videos">
             <MyVideosList
               videos={videos}
               user={user}
               updateFavoriteVideos={updateFavoriteVideos}
             />
           </Route>
-          <Route path="/videos/:id/edit">
+          <Route exact path="/videos/:id/edit">
             <VideoForm
               videos={videos}
               categories={categories}
               onSubmitVideo={editVideo}
             />
           </Route>
-          <Route path="/videos/:id">
+          <Route exact path="/videos/:id">
             <Video videos={videos} />
           </Route>
           <Route path="/">
             <CategoryList
               categories={categories}
-              onCategorySelect={setCurrentCategory}
+              onCategorySelect={setCategory}
             />
           </Route>
         </Switch>

@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import {
   Container,
   Box,
@@ -39,6 +40,30 @@ const defaultFormData = {
 const VideoForm = ({ videos, categories, onSubmitVideo }) => {
   const [formData, setFormData] = useState(defaultFormData);
 
+  const params = useParams();
+
+  const videoToEdit = videos.find((video) => video.id === parseInt(params.id));
+
+  useEffect(() => {
+    if (params.id && videos.length > 0) {
+      const prefilledFormData = {
+        url: videoToEdit.url,
+        youtubeVideoId: videoToEdit.youtubeVideoId,
+        title: videoToEdit.title,
+        channelTitle: videoToEdit.channelTitle,
+        categoryId: videoToEdit.categoryId,
+        likes: videoToEdit.likes,
+        views: videoToEdit.views,
+        duration: videoToEdit.duration,
+        description: videoToEdit.description,
+      };
+
+      setFormData(prefilledFormData);
+    } else {
+      setFormData(defaultFormData);
+    }
+  }, []);
+
   function handleChange(e) {
     const key = e.target.name;
     const value = e.target.value;
@@ -70,7 +95,9 @@ const VideoForm = ({ videos, categories, onSubmitVideo }) => {
     const videoId = getYoutubeVideoId();
     const parsedFormData = parseFormData(videoId);
 
-    onSubmitVideo(parsedFormData);
+    params.id
+      ? onSubmitVideo(parsedFormData, videoToEdit)
+      : onSubmitVideo(parsedFormData);
 
     setFormData(defaultFormData);
   }
@@ -80,8 +107,7 @@ const VideoForm = ({ videos, categories, onSubmitVideo }) => {
       <Container maxWidth="xl">
         <Box sx={{ ml: "40vw" }}>
           <Typography variant="h4" fontWeight={"bold"}>
-            Add a Video
-            {/* {params.id ? "Edit Video" : "Add a Video"} */}
+            {params.id ? "Edit Video" : "Add a Video"}
           </Typography>
         </Box>
         <Box
