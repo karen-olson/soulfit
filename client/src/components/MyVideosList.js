@@ -4,13 +4,7 @@ import { Box } from "@mui/system";
 import { ImageList } from "@mui/material";
 
 const MyVideosList = ({ videos, user, updateFavoriteVideos }) => {
-  const userAddedVideos = videos.filter((video) => video.videoAddedByUser);
-
-  const myAddedVideos = userAddedVideos.filter(
-    (video) => video.videoAddedByUser.id === user.id
-  );
-
-  const videoCards = myAddedVideos.map((video) => (
+  const videoCards = user.added_videos.map((video) => (
     <VideoCard
       video={video}
       key={video.id}

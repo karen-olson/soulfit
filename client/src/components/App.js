@@ -160,16 +160,27 @@ function App() {
       body: JSON.stringify(updatedVideoWithSnakeCaseKeys),
     };
 
-    fetch(`/videos/${videoToEdit.id}`, configObj)
-      .then((resp) => {
-        if (resp.ok) {
-          resp.json();
-        }
-      })
-      .then((video) => {
-        const updatedVideos = [...videos, video];
-        setVideos(() => updatedVideos);
-      });
+    fetch(`/videos/${videoToEdit.id}`, configObj).then((resp) => {
+      if (resp.ok) {
+        resp.json().then((updatedVideo) => {
+          const updatedVideos = user.added_videos.map((added_video) => {
+            if (added_video.id === updatedVideo.id) {
+              return { ...updatedVideo };
+            } else {
+              return added_video;
+            }
+          });
+          const updatedUser = {
+            ...user,
+            added_videos: updatedVideos,
+          };
+          setUser(() => updatedUser);
+        });
+      } else {
+        console.log(resp);
+        // handle errors
+      }
+    });
   }
 
   if (!user)
