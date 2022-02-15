@@ -9,8 +9,8 @@ import VideoList from "./VideoList";
 import MyVideosList from "./MyVideosList";
 import Video from "./Video";
 import VideoForm from "./VideoForm";
-import FavoriteVideosPage from "./FavoriteVideosPage";
 import { Paper } from "@mui/material";
+import FavoriteVideosPage from "./FavoriteVideosPage";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -111,8 +111,6 @@ function App() {
   }
 
   function updateFavoriteVideos(video, isFavorited) {
-    console.log({ user });
-
     if (isFavorited) {
       const updatedFavoriteVideos = user.saved_videos.filter(
         (saved_video) => saved_video.id !== video.id
