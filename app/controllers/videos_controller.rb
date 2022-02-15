@@ -13,7 +13,6 @@ class VideosController < ApplicationController
     end
 
     def create
-        byebug
         if session[:user_id]
             current_user = User.find(session[:user_id])
             video = current_user.added_videos.create!(video_params)
