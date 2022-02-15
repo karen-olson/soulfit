@@ -16,16 +16,14 @@ const MyVideosList = ({ videos, user, updateFavoriteVideos }) => {
       key={video.id}
       user={user}
       updateFavoriteVideos={updateFavoriteVideos}
+      updateFavoriteVideos={updateFavoriteVideos}
     />
   ));
 
   if (videos.length > 0 && user) {
     return (
       <Container maxWidth="xl">
-        <Box
-          centered
-          sx={{ width: "80vw", height: "100vh", pt: "5vh", pb: "10vh" }}
-        >
+        <Box centered sx={{ width: "100vw", height: "100vh", p: "5vh" }}>
           <ImageList cols={5} gap={"auto"}>
             {videoCards}
           </ImageList>

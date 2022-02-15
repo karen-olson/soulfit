@@ -17,13 +17,9 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 const VideoCard = ({ video, user, updateFavoriteVideos }) => {
-  const myFavoriteVideoIds = user.user_saved_videos.map(
-    (video) => video.video_id
-  );
-
   const [showEditDeleteButtons, setShowEditDeleteButtons] = useState(false);
   const [isFavorited, setIsFavorited] = useState(
-    myFavoriteVideoIds.includes(video.id)
+    user.saved_videos.includes(video)
   );
 
   const history = useHistory();
@@ -40,12 +36,55 @@ const VideoCard = ({ video, user, updateFavoriteVideos }) => {
   }
 
   function handleFavoriteClick() {
-    // x create state to tell whether this video is favorited or not
-    // x if the video is favorited, render a full heart. if not, render an empty heart?
-    // update the database
-    // x reverse isFavorited
-    updateFavoriteVideos(user, video, isFavorited);
-    setIsFavorited(() => !isFavorited);
+    if (isFavorited) {
+      unfavoriteVideo(video);
+    } else {
+      favoriteVideo(user, video);
+    }
+  }
+
+  function unfavoriteVideo(video) {
+    const configObj = {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        user_id: user.id,
+        video_id: video.id,
+      }),
+    };
+
+    // Using a custom route where no ID is appended to the URL on a delete request.
+    // This is to avoid having to store all of user_saved_videos in state on the frontend.
+    // In order to delete the correct record, send a delete request to /user_saved_videos,
+    //    and include the user_id and video_id in the body of the request.
+    fetch(`/user_saved_videos/`, configObj).then((resp) => {
+      if (resp.ok) {
+        updateFavoriteVideos(video, isFavorited);
+        setIsFavorited(false);
+      }
+    });
+  }
+
+  function favoriteVideo(user, video) {
+    const configObj = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        user_id: user.id,
+        video_id: video.id,
+      }),
+    };
+
+    fetch(`/user_saved_videos`, configObj)
+      .then((resp) => resp.json())
+      .then((favoriteVideo) => {
+        updateFavoriteVideos(video, isFavorited);
+        setIsFavorited(true);
+      });
   }
 
   function handleEditClick() {

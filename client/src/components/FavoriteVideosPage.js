@@ -2,16 +2,10 @@ import { useState } from "react";
 import { Container } from "@mui/material";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
-import Typography from "@mui/material/Typography";
 import ListItem from "@mui/material/ListItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import NavBar from "./NavBar";
 import FavoriteVideosList from "./FavoriteVideosList";
-import { bottomNavigationActionClasses, Button } from "@mui/material";
+import { Button } from "@mui/material";
 
 const drawerWidth = 205;
 
@@ -19,7 +13,6 @@ const FavoriteVideosPage = ({
   categories,
   videos,
   user,
-  setUser,
   updateFavoriteVideos,
 }) => {
   const [currentCategoryId, setCurrentCategoryId] = useState(
@@ -30,15 +23,7 @@ const FavoriteVideosPage = ({
     setCurrentCategoryId(parseInt(e.target.id));
   }
 
-  const favoriteVideoIds = user.user_saved_videos.map(
-    (video) => video.video_id
-  );
-
-  const favoriteVideos = favoriteVideoIds.map((id) =>
-    videos.find((video) => video.id === id)
-  );
-
-  const currentCategoryFavoriteVideos = favoriteVideos.filter(
+  const currentCategoryFavoriteVideos = user.saved_videos.filter(
     (favoriteVideo) => favoriteVideo.categoryId === currentCategoryId
   );
 

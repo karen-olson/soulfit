@@ -9,15 +9,14 @@ import VideoList from "./VideoList";
 import MyVideosList from "./MyVideosList";
 import Video from "./Video";
 import VideoForm from "./VideoForm";
-import { Paper } from "@mui/material";
 import FavoriteVideosPage from "./FavoriteVideosPage";
+import { Paper } from "@mui/material";
 
 function App() {
   const [user, setUser] = useState(null);
   const [categories, setCategories] = useState([]);
   const [category, setCategory] = useState(null);
   const [videos, setVideos] = useState([]);
-  const [userFavoritedVideos, setUserFavoritedVideos] = useState([]);
 
   const history = useHistory();
 
@@ -39,14 +38,6 @@ function App() {
     fetch("/videos")
       .then((resp) => resp.json())
       .then((videos) => setVideos(videos));
-  }, []);
-
-  useEffect(() => {
-    fetch("/user_saved_videos")
-      .then((resp) => resp.json())
-      .then((userFavoritedVideos) =>
-        setUserFavoritedVideos(userFavoritedVideos)
-      );
   }, []);
 
   function changePasswordConfirmationCase(user) {
@@ -119,57 +110,25 @@ function App() {
       });
   }
 
-  function unfavoriteVideo(userVideo) {
-    const configObj = {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(userVideo),
-    };
+  function updateFavoriteVideos(video, isFavorited) {
+    console.log({ user });
 
-    fetch(`/user_saved_videos/${userVideo.id}`, configObj).then((resp) => {
-      if (resp.ok) {
-        const updatedUserFavoritedVideos = userFavoritedVideos.filter(
-          (userFavoritedVideo) => userFavoritedVideo.id !== userVideo.id
-        );
-        setUserFavoritedVideos(updatedUserFavoritedVideos);
-      }
-    });
-  }
-
-  function favoriteVideo(user, video) {
-    const configObj = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        user_id: user.id,
-        video_id: video.id,
-      }),
-    };
-
-    fetch(`/user_saved_videos`, configObj)
-      .then((resp) => resp.json())
-      .then((favoriteVideo) =>
-        setUserFavoritedVideos(() => [...userFavoritedVideos, favoriteVideo])
-      );
-  }
-
-  function updateFavoriteVideos(user, video, isFavorited) {
-    const userVideo = userFavoritedVideos.find(
-      (userFavoritedVideo) =>
-        user.id === userFavoritedVideo.user_id &&
-        video.id === userFavoritedVideo.video_id
-    );
-
-    // Why aren't videos being added/removed from favorite video list page until a refresh?
-    // Shouldn't the whole app be re-rendering when userFavoritedVideos is updated?
     if (isFavorited) {
-      unfavoriteVideo(userVideo);
+      const updatedFavoriteVideos = user.saved_videos.filter(
+        (saved_video) => saved_video.id !== video.id
+      );
+      const userWithFavoriteVideoRemoved = {
+        ...user,
+        saved_videos: updatedFavoriteVideos,
+      };
+      setUser(() => userWithFavoriteVideoRemoved);
     } else {
-      favoriteVideo(user, video);
+      const updatedFavoriteVideos = [...user.saved_videos, video];
+      const userWithFavoriteVideoAdded = {
+        ...user,
+        saved_videos: updatedFavoriteVideos,
+      };
+      setUser(() => userWithFavoriteVideoAdded);
     }
   }
 
@@ -254,7 +213,6 @@ function App() {
               categories={categories}
               videos={videos}
               user={user}
-              setUser={setUser}
               updateFavoriteVideos={updateFavoriteVideos}
             />
           </Route>
