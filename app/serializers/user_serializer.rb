@@ -1,6 +1,6 @@
 class UserSerializer < ActiveModel::Serializer
-  attributes :id, :name, :username, :admin, :password_digest
+  attributes :id, :name, :username, :admin
 
-  has_many :user_added_videos
-  has_many :user_saved_videos
+  has_many :added_videos, through: :user_added_videos
+  has_many :saved_videos, through: :user_saved_videos
 end
