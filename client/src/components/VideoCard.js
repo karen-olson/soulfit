@@ -19,7 +19,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 const VideoCard = ({ video, user, updateFavoriteVideos, deleteVideo }) => {
   const [showEditDeleteButtons, setShowEditDeleteButtons] = useState(false);
   const [isFavorited, setIsFavorited] = useState(
-    user.saved_videos.includes(video)
+    user.favorited_videos.includes(video)
   );
 
   const history = useHistory();
@@ -56,10 +56,10 @@ const VideoCard = ({ video, user, updateFavoriteVideos, deleteVideo }) => {
     };
 
     // Using a custom route where no ID is appended to the URL on a delete request.
-    // This is to avoid having to store all of user_saved_videos in state on the frontend.
-    // In order to delete the correct record, send a delete request to /user_saved_videos,
+    // This is to avoid having to store all of user_favorited_videos in state on the frontend.
+    // In order to delete the correct record, send a delete request to /user_favorited_videos,
     //    and include the user_id and video_id in the body of the request.
-    fetch(`/user_saved_videos/`, configObj).then((resp) => {
+    fetch(`/user_favorited_videos/`, configObj).then((resp) => {
       if (resp.ok) {
         updateFavoriteVideos(video, isFavorited);
         setIsFavorited(false);
@@ -79,7 +79,7 @@ const VideoCard = ({ video, user, updateFavoriteVideos, deleteVideo }) => {
       }),
     };
 
-    fetch(`/user_saved_videos`, configObj)
+    fetch(`/user_favorited_videos`, configObj)
       .then((resp) => resp.json())
       .then((favoriteVideo) => {
         updateFavoriteVideos(video, isFavorited);

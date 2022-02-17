@@ -15,7 +15,7 @@ class VideosController < ApplicationController
     def create
         if session[:user_id]
             current_user = User.find(session[:user_id])
-            video = current_user.added_videos.create!(video_params)
+            video = current_user.uploaded_videos.create!(video_params)
         else
             video = Video.create!(video_params)
         end

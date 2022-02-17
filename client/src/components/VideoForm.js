@@ -110,7 +110,7 @@ const VideoForm = ({ videos, categories, onSubmitVideo }) => {
       createdAt: videoToEdit.createdAt,
       updatedAt: videoToEdit.updatedAt,
       publishedAt: videoToEdit.publishedAt,
-      videoAddedByUser: videoToEdit.videoAddedByUser,
+      videoUploadedByUser: videoToEdit.videoUploadedByUser,
     };
 
     const editedVideoWithSnakeCaseKeys = renameObjectKeys(
@@ -121,7 +121,7 @@ const VideoForm = ({ videos, categories, onSubmitVideo }) => {
         createdAt: "created_at",
         updatedAt: "updated_at",
         publishedAt: "published_at",
-        videoAddedByUser: "video_added_by_user",
+        videoUploadedByUser: "video_uploaded_by_user",
       },
       editedVideo
     );

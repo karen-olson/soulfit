@@ -88,7 +88,7 @@ function App() {
         setVideos(() => updatedVideos);
         setUser({
           ...user,
-          added_videos: [...user.added_videos, video],
+          uploaded_videos: [...user.uploaded_videos, video],
         });
       });
   }
@@ -105,16 +105,16 @@ function App() {
     fetch(`/videos/${originalVideo.id}`, configObj).then((resp) => {
       if (resp.ok) {
         resp.json().then((updatedVideo) => {
-          const updatedVideos = user.added_videos.map((added_video) => {
-            if (added_video.id === updatedVideo.id) {
+          const updatedVideos = user.uploaded_videos.map((uploaded_video) => {
+            if (uploaded_video.id === updatedVideo.id) {
               return { ...updatedVideo };
             } else {
-              return added_video;
+              return uploaded_video;
             }
           });
           const updatedUser = {
             ...user,
-            added_videos: updatedVideos,
+            uploaded_videos: updatedVideos,
           };
           setUser(() => updatedUser);
         });
@@ -129,16 +129,16 @@ function App() {
     let updatedFavoriteVideos = [];
 
     if (isFavorited) {
-      updatedFavoriteVideos = user.saved_videos.filter(
-        (saved_video) => saved_video.id !== video.id
+      updatedFavoriteVideos = user.favorited_videos.filter(
+        (favorited_video) => favorited_video.id !== video.id
       );
     } else {
-      updatedFavoriteVideos = [...user.saved_videos, video];
+      updatedFavoriteVideos = [...user.favorited_videos, video];
     }
 
     const updatedUser = {
       ...user,
-      saved_videos: updatedFavoriteVideos,
+      favorited_videos: updatedFavoriteVideos,
     };
 
     setUser(() => updatedUser);
@@ -160,11 +160,11 @@ function App() {
         setVideos(videos.filter((video) => video.id !== id));
         setUser({
           ...user,
-          added_videos: user.added_videos.filter(
-            (added_video) => added_video.id !== id
+          uploaded_videos: user.uploaded_videos.filter(
+            (uploaded_video) => uploaded_video.id !== id
           ),
-          saved_videos: user.saved_videos.filter(
-            (saved_video) => saved_video.id !== id
+          favorited_videos: user.favorited_videos.filter(
+            (favorited_video) => favorited_video.id !== id
           ),
         });
       }

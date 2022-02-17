@@ -23,7 +23,7 @@ const FavoriteVideosPage = ({
     setCurrentCategoryId(parseInt(e.target.id));
   }
 
-  const currentCategoryFavoriteVideos = user.saved_videos.filter(
+  const currentCategoryFavoriteVideos = user.favorited_videos.filter(
     (favoriteVideo) => favoriteVideo.categoryId === currentCategoryId
   );
 

@@ -1,13 +1,12 @@
 class User < ApplicationRecord
     has_secure_password
 
-    has_many :user_added_videos, dependent: :destroy
-    has_many :added_videos, through: :user_added_videos
+    has_many :user_uploaded_videos, dependent: :destroy
+    has_many :uploaded_videos, through: :user_uploaded_videos
 
-    has_many :user_saved_videos, dependent: :destroy 
-    has_many :saved_videos, through: :user_saved_videos
+    has_many :user_favorited_videos, dependent: :destroy 
+    has_many :favorited_videos, through: :user_favorited_videos
 
-    ##### need to alias "videos" after the second association between user and video is added
 
     validates :username, presence: true, uniqueness: true
     validates :password, presence: true
