@@ -3,13 +3,9 @@ import { Box } from "@mui/material";
 import { ImageList } from "@mui/material";
 import CategoryCard from "./CategoryCard";
 
-const CategoryList = ({ categories, onCategorySelect }) => {
+const CategoryList = ({ categories }) => {
   const categoryCards = categories.map((category) => (
-    <CategoryCard
-      category={category}
-      onCategorySelect={onCategorySelect}
-      key={category.id}
-    />
+    <CategoryCard category={category} key={category.id} />
   ));
 
   if (categories.length > 0) {
