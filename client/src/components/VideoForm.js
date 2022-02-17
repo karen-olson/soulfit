@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import renameObjectKeys from "../renameObjectKeys";
 import {
   Container,
   Box,
@@ -12,18 +13,6 @@ import {
   FormControl,
   Button,
 } from "@mui/material";
-
-// DB structure:
-// url
-// title
-// channel_title
-// likes
-// views
-// category_id
-// duration
-// published_at
-// youtube_video_id
-// description
 
 const defaultFormData = {
   url: "",
@@ -96,10 +85,48 @@ const VideoForm = ({ videos, categories, onSubmitVideo }) => {
     const parsedFormData = parseFormData(videoId);
 
     params.id
-      ? onSubmitVideo(parsedFormData, videoToEdit)
-      : onSubmitVideo(parsedFormData);
+      ? submitEditedVideo(parsedFormData, videoToEdit)
+      : submitNewVideo(parsedFormData);
 
     setFormData(defaultFormData);
+  }
+
+  function submitNewVideo(parsedFormData) {
+    const newVideoWithSnakeCaseKeys = renameObjectKeys(
+      {
+        categoryId: "category_id",
+        channelTitle: "channel_title",
+        youtubeVideoId: "youtube_video_id",
+      },
+      parsedFormData
+    );
+
+    onSubmitVideo(newVideoWithSnakeCaseKeys);
+  }
+
+  function submitEditedVideo(parsedFormData, videoToEdit) {
+    const editedVideo = {
+      ...parsedFormData,
+      createdAt: videoToEdit.createdAt,
+      updatedAt: videoToEdit.updatedAt,
+      publishedAt: videoToEdit.publishedAt,
+      videoAddedByUser: videoToEdit.videoAddedByUser,
+    };
+
+    const editedVideoWithSnakeCaseKeys = renameObjectKeys(
+      {
+        categoryId: "category_id",
+        channelTitle: "channel_title",
+        youtubeVideoId: "youtube_video_id",
+        createdAt: "created_at",
+        updatedAt: "updated_at",
+        publishedAt: "published_at",
+        videoAddedByUser: "video_added_by_user",
+      },
+      editedVideo
+    );
+
+    onSubmitVideo(editedVideoWithSnakeCaseKeys, videoToEdit);
   }
 
   if (videos.length > 0 && categories.length > 0) {

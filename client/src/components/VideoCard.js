@@ -16,7 +16,7 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-const VideoCard = ({ video, user, updateFavoriteVideos }) => {
+const VideoCard = ({ video, user, updateFavoriteVideos, deleteVideo }) => {
   const [showEditDeleteButtons, setShowEditDeleteButtons] = useState(false);
   const [isFavorited, setIsFavorited] = useState(
     user.saved_videos.includes(video)
@@ -92,7 +92,8 @@ const VideoCard = ({ video, user, updateFavoriteVideos }) => {
   }
 
   function handleDeleteClick(e) {
-    console.log(e);
+    deleteVideo(video.id);
+    // callback function from app (deleting the entire video, not just the join table record)
   }
 
   if (video && user) {

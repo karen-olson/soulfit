@@ -5,6 +5,7 @@ const FavoriteVideosList = ({
   currentCategoryFavoriteVideos,
   user,
   updateFavoriteVideos,
+  deleteVideo,
 }) => {
   const videoCards = currentCategoryFavoriteVideos.map((video) => (
     <VideoCard
@@ -12,6 +13,7 @@ const FavoriteVideosList = ({
       key={video.id}
       user={user}
       updateFavoriteVideos={updateFavoriteVideos}
+      deleteVideo={deleteVideo}
     />
   ));
 

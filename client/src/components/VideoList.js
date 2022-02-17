@@ -4,7 +4,7 @@ import { Box } from "@mui/system";
 import { ImageList } from "@mui/material";
 import { useParams } from "react-router-dom";
 
-const VideoList = ({ videos, user, updateFavoriteVideos }) => {
+const VideoList = ({ videos, user, updateFavoriteVideos, deleteVideo }) => {
   const params = useParams();
 
   const videosFilteredByCategory = videos.filter(
@@ -17,6 +17,7 @@ const VideoList = ({ videos, user, updateFavoriteVideos }) => {
       key={video.id}
       user={user}
       updateFavoriteVideos={updateFavoriteVideos}
+      deleteVideo={deleteVideo}
     />
   ));
 

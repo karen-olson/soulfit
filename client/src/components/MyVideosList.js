@@ -3,14 +3,14 @@ import { Container } from "@mui/material";
 import { Box } from "@mui/system";
 import { ImageList } from "@mui/material";
 
-const MyVideosList = ({ videos, user, updateFavoriteVideos }) => {
+const MyVideosList = ({ videos, user, updateFavoriteVideos, deleteVideo }) => {
   const videoCards = user.added_videos.map((video) => (
     <VideoCard
       video={video}
       key={video.id}
       user={user}
       updateFavoriteVideos={updateFavoriteVideos}
-      updateFavoriteVideos={updateFavoriteVideos}
+      deleteVideo={deleteVideo}
     />
   ));
 

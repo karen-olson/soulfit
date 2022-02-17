@@ -11,11 +11,11 @@ import Video from "./Video";
 import VideoForm from "./VideoForm";
 import { Paper } from "@mui/material";
 import FavoriteVideosPage from "./FavoriteVideosPage";
+import renameObjectKeys from "../renameObjectKeys";
 
 function App() {
   const [user, setUser] = useState(null);
   const [categories, setCategories] = useState([]);
-  const [category, setCategory] = useState(null);
   const [videos, setVideos] = useState([]);
 
   const history = useHistory();
@@ -40,26 +40,25 @@ function App() {
       .then((videos) => setVideos(videos));
   }, []);
 
-  function changePasswordConfirmationCase(user) {
-    user["password_confirmation"] = user["passwordConfirmation"];
-    delete user["passwordConfirmation"];
-    return user;
-  }
-
   function onLogin(user) {
     setUser(user);
     history.push("/");
   }
 
   function createUser(newUser) {
-    changePasswordConfirmationCase(newUser);
+    const newUserWithSnakeCaseKeys = renameObjectKeys(
+      {
+        passwordConfirmation: "password_confirmation",
+      },
+      newUser
+    );
 
     const configObj = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(newUser),
+      body: JSON.stringify(newUserWithSnakeCaseKeys),
     };
 
     fetch("/users", configObj).then((resp) => {
@@ -73,33 +72,13 @@ function App() {
     });
   }
 
-  // Credit for renameObjectKeys function to https://www.30secondsofcode.org/js/s/rename-keys and https://www.banjocode.com/post/javascript/rename-keys/
-  function renameObjectKeys(keysMap, obj) {
-    return Object.keys(obj).reduce(
-      (accumulator, key) => ({
-        ...accumulator,
-        ...{ [keysMap[key] || key]: obj[key] },
-      }),
-      {}
-    );
-  }
-
   function addVideo(video) {
-    const videoWithSnakeCaseKeys = renameObjectKeys(
-      {
-        categoryId: "category_id",
-        channelTitle: "channel_title",
-        youtubeVideoId: "youtube_video_id",
-      },
-      video
-    );
-
     const configObj = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(videoWithSnakeCaseKeys),
+      body: JSON.stringify(video),
     };
 
     fetch("/videos", configObj)
@@ -107,7 +86,38 @@ function App() {
       .then((video) => {
         const updatedVideos = [...videos, video];
         setVideos(() => updatedVideos);
+        setUser({
+          ...user,
+          added_videos: [...user.added_videos, video],
+        });
       });
+  }
+
+  function deleteVideo(id) {
+    const configObj = {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    fetch(`/videos/${id}`, configObj).then((resp) => {
+      if (resp.ok) {
+        // because the video lists are using user state to render
+        // video cards instead of video state, you need to update
+        // user state any time you want to re-render a video list
+        setVideos(videos.filter((video) => video.id !== id));
+        setUser({
+          ...user,
+          added_videos: user.added_videos.filter(
+            (added_video) => added_video.id !== id
+          ),
+          saved_videos: user.saved_videos.filter(
+            (saved_video) => saved_video.id !== id
+          ),
+        });
+      }
+    });
   }
 
   function updateFavoriteVideos(video, isFavorited) {
@@ -130,37 +140,16 @@ function App() {
     }
   }
 
-  function editVideo(updatedVideoData, videoToEdit) {
-    const updatedVideo = {
-      ...updatedVideoData,
-      createdAt: videoToEdit.createdAt,
-      updatedAt: videoToEdit.updatedAt,
-      publishedAt: videoToEdit.publishedAt,
-      videoAddedByUser: videoToEdit.videoAddedByUser,
-    };
-
-    const updatedVideoWithSnakeCaseKeys = renameObjectKeys(
-      {
-        categoryId: "category_id",
-        channelTitle: "channel_title",
-        youtubeVideoId: "youtube_video_id",
-        createdAt: "created_at",
-        updatedAt: "updated_at",
-        publishedAt: "published_at",
-        videoAddedByUser: "video_added_by_user",
-      },
-      updatedVideo
-    );
-
+  function editVideo(editedVideo, originalVideo) {
     const configObj = {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(updatedVideoWithSnakeCaseKeys),
+      body: JSON.stringify(editedVideo),
     };
 
-    fetch(`/videos/${videoToEdit.id}`, configObj).then((resp) => {
+    fetch(`/videos/${originalVideo.id}`, configObj).then((resp) => {
       if (resp.ok) {
         resp.json().then((updatedVideo) => {
           const updatedVideos = user.added_videos.map((added_video) => {
@@ -208,6 +197,7 @@ function App() {
               videos={videos}
               user={user}
               updateFavoriteVideos={updateFavoriteVideos}
+              deleteVideo={deleteVideo}
             />
           </Route>
           <Route exact path="/videos/new">
@@ -223,6 +213,7 @@ function App() {
               videos={videos}
               user={user}
               updateFavoriteVideos={updateFavoriteVideos}
+              deleteVideo={deleteVideo}
             />
           </Route>
           <Route exact path="/videos/my_videos">
@@ -230,6 +221,7 @@ function App() {
               videos={videos}
               user={user}
               updateFavoriteVideos={updateFavoriteVideos}
+              deleteVideo={deleteVideo}
             />
           </Route>
           <Route exact path="/videos/:id/edit">
@@ -243,10 +235,7 @@ function App() {
             <Video videos={videos} />
           </Route>
           <Route path="/">
-            <CategoryList
-              categories={categories}
-              onCategorySelect={setCategory}
-            />
+            <CategoryList categories={categories} />
           </Route>
         </Switch>
       </>
