@@ -93,53 +93,6 @@ function App() {
       });
   }
 
-  function deleteVideo(id) {
-    const configObj = {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-
-    fetch(`/videos/${id}`, configObj).then((resp) => {
-      if (resp.ok) {
-        // because the video lists are using user state to render
-        // video cards instead of video state, you need to update
-        // user state any time you want to re-render a video list
-        setVideos(videos.filter((video) => video.id !== id));
-        setUser({
-          ...user,
-          added_videos: user.added_videos.filter(
-            (added_video) => added_video.id !== id
-          ),
-          saved_videos: user.saved_videos.filter(
-            (saved_video) => saved_video.id !== id
-          ),
-        });
-      }
-    });
-  }
-
-  function updateFavoriteVideos(video, isFavorited) {
-    if (isFavorited) {
-      const updatedFavoriteVideos = user.saved_videos.filter(
-        (saved_video) => saved_video.id !== video.id
-      );
-      const userWithFavoriteVideoRemoved = {
-        ...user,
-        saved_videos: updatedFavoriteVideos,
-      };
-      setUser(() => userWithFavoriteVideoRemoved);
-    } else {
-      const updatedFavoriteVideos = [...user.saved_videos, video];
-      const userWithFavoriteVideoAdded = {
-        ...user,
-        saved_videos: updatedFavoriteVideos,
-      };
-      setUser(() => userWithFavoriteVideoAdded);
-    }
-  }
-
   function editVideo(editedVideo, originalVideo) {
     const configObj = {
       method: "PATCH",
@@ -168,6 +121,52 @@ function App() {
       } else {
         console.log(resp);
         // handle errors
+      }
+    });
+  }
+
+  function updateFavoriteVideos(video, isFavorited) {
+    let updatedFavoriteVideos = [];
+
+    if (isFavorited) {
+      updatedFavoriteVideos = user.saved_videos.filter(
+        (saved_video) => saved_video.id !== video.id
+      );
+    } else {
+      updatedFavoriteVideos = [...user.saved_videos, video];
+    }
+
+    const updatedUser = {
+      ...user,
+      saved_videos: updatedFavoriteVideos,
+    };
+
+    setUser(() => updatedUser);
+  }
+
+  function deleteVideo(id) {
+    const configObj = {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    fetch(`/videos/${id}`, configObj).then((resp) => {
+      if (resp.ok) {
+        // because the video lists are using user state to render
+        // video cards instead of video state, you need to update
+        // user state any time you want to re-render a video list
+        setVideos(videos.filter((video) => video.id !== id));
+        setUser({
+          ...user,
+          added_videos: user.added_videos.filter(
+            (added_video) => added_video.id !== id
+          ),
+          saved_videos: user.saved_videos.filter(
+            (saved_video) => saved_video.id !== id
+          ),
+        });
       }
     });
   }
