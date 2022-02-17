@@ -6,7 +6,7 @@ import NavBar from "./NavBar";
 import AuthPage from "./AuthPage";
 import CategoryList from "./CategoryList";
 import VideoList from "./VideoList";
-import MyVideosList from "./MyVideosList";
+import MyUploadsList from "./MyUploadsList";
 import Video from "./Video";
 import VideoForm from "./VideoForm";
 import { Paper } from "@mui/material";
@@ -216,7 +216,7 @@ function App() {
             />
           </Route>
           <Route exact path="/videos/my_videos">
-            <MyVideosList
+            <MyUploadsList
               videos={videos}
               user={user}
               updateFavoriteVideos={updateFavoriteVideos}
