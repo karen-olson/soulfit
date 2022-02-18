@@ -8,6 +8,8 @@ require 'json'
 # If you're going to have users make API calls, consider making a class for it (service?)
 # To help other users understand what's going on in seeds.rb, add comments and put notes in readme
 
+puts "🌱 Seeding..."
+
 Video.destroy_all
 Category.destroy_all
 
@@ -224,3 +226,5 @@ end
 ####################
 
 fetch_and_create_videos
+
+puts "✅ Done seeding!"
