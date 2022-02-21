@@ -26,10 +26,11 @@ const VideoCard = ({ video, user, updateFavoriteVideos, deleteVideo }) => {
   const location = useLocation();
 
   useEffect(() => {
-    if (location.pathname === "/videos/my_videos" || user.admin === true) {
+    if (location.pathname === "/videos/my_uploads" || user.admin === true) {
       setShowEditDeleteButtons(true);
     }
   }, []);
+
 
   function handleVideoThumbnailClick(e) {
     history.push(`/videos/${video.id}`);

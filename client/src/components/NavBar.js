@@ -30,7 +30,7 @@ const NavBar = ({ setUser }) => {
         <Tab
           component={NavLink}
           label="My Uploads"
-          to="/videos/my_videos"
+          to="/videos/my_uploads"
           sx={{ mr: "2vw" }}
         />
         <Tab

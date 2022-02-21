@@ -215,7 +215,7 @@ function App() {
               deleteVideo={deleteVideo}
             />
           </Route>
-          <Route exact path="/videos/my_videos">
+          <Route exact path="/videos/my_uploads">
             <MyUploadsList
               videos={videos}
               user={user}
