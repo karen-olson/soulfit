@@ -23,11 +23,10 @@ const FavoriteVideosList = ({
         <Box
           centered
           sx={{
-            width: "100vw",
             height: "100vh",
           }}
         >
-          <ImageList cols={5} gap={"auto"}>
+          <ImageList cols={4} gap={"auto"}>
             {videoCards}
           </ImageList>
         </Box>

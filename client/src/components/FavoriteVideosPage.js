@@ -62,11 +62,13 @@ const FavoriteVideosPage = ({
             </Drawer>
           </Box>
           {currentCategoryFavoriteVideos.length > 0 ? (
-            <FavoriteVideosList
-              currentCategoryFavoriteVideos={currentCategoryFavoriteVideos}
-              user={user}
-              updateFavoriteVideos={updateFavoriteVideos}
-            />
+            <Container maxWidth="xl">
+              <FavoriteVideosList
+                currentCategoryFavoriteVideos={currentCategoryFavoriteVideos}
+                user={user}
+                updateFavoriteVideos={updateFavoriteVideos}
+              />
+            </Container>
           ) : (
             <Container maxWidth="xl">
               <Box height="100vh">
