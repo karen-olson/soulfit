@@ -12,6 +12,7 @@ puts "🌱 Seeding..."
 
 Video.destroy_all
 Category.destroy_all
+User.destroy_all
 
 dance_fitness = Category.create(name: "Dance Fitness", img_url: "https://i.imgur.com/WyfjSt6.jpg")
 yoga = Category.create(name: "Yoga", img_url: "https://i.imgur.com/cE6NOvP.jpg")
