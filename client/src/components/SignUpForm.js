@@ -16,7 +16,7 @@ const defaultFormData = {
 
 const SignUpForm = ({ createUser }) => {
   const [formData, setFormData] = useState(defaultFormData);
-  const [errors, setErrors] = useState(null);
+  // const [errors, setErrors] = useState(null);
 
   function handleChange(e) {
     const value = e.target.value;

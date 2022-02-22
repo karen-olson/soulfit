@@ -15,7 +15,13 @@ const NavBar = ({ setUser }) => {
     <Box sx={{ width: "100%", mb: 4, pt: 2 }}>
       <Tabs value={false}>
         <Tab
-          icon={<img src={SoulFitIconWithCircle} style={{ height: "45px" }} />}
+          icon={
+            <img
+              src={SoulFitIconWithCircle}
+              style={{ height: "45px" }}
+              alt="SoulFit Logo - purple and teal abstract bird design"
+            />
+          }
           component={NavLink}
           to="/"
           sx={{ mr: "0vw" }}
