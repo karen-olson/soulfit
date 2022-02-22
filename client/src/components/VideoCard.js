@@ -53,7 +53,7 @@ const VideoCard = ({ video, user, updateFavoriteVideos, deleteVideo }) => {
     if (location.pathname === "/videos/my_uploads" || user.admin === true) {
       setShowEditDeleteButtons(true);
     }
-  }, []);
+  }, [location.pathname, user.admin]);
 
   function handleVideoThumbnailClick(e) {
     history.push(`/videos/${video.id}`);
@@ -119,7 +119,17 @@ const VideoCard = ({ video, user, updateFavoriteVideos, deleteVideo }) => {
     deleteVideo(video.id);
   }
 
-  if (video && user) {
+  function convertDurationToMinutesAndSeconds() {
+    const minutesFloat = video.duration / 60;
+    const minutesInteger = parseInt(minutesFloat);
+    const secondsFloat = minutesFloat - minutesInteger;
+    const secondsInteger = Math.round(secondsFloat * 60);
+    return { minutes: minutesInteger, seconds: secondsInteger };
+  }
+
+  const duration = convertDurationToMinutesAndSeconds();
+
+  if (video.id && user) {
     return (
       <>
         <ImageListItem key={video.id} sx={{ width: "15vw", height: "auto" }}>
@@ -139,14 +149,33 @@ const VideoCard = ({ video, user, updateFavoriteVideos, deleteVideo }) => {
                 image={video.thumbnailUrl}
                 alt={`Thumbnail for ${video.title}`}
               />
+              <CardContent>
+                <Typography
+                  fontSize="small"
+                  align="right"
+                  sx={{ mt: 0, mb: -3 }}
+                >
+                  {duration.minutes}:
+                  {duration.seconds < 10
+                    ? "0" + duration.seconds
+                    : duration.seconds}
+                </Typography>
+              </CardContent>
               <CardHeader
-                title={video.title.slice(0, 50) + "..."}
+                title={
+                  video.title.length > 43
+                    ? video.title.slice(0, 40) + "..."
+                    : video.title
+                }
                 subheader={video.channelTitle}
-                titleTypographyProps={{ variant: "subtitle1", maxHeight: 80 }}
+                titleTypographyProps={{ variant: "subtitle1", maxHeight: 85 }}
               />
               <CardContent>
                 <Typography fontSize={"small"} sx={{ mt: -3 }}>
-                  {video.views} views | {video.likes} likes
+                  {video.views.toLocaleString()} views
+                </Typography>
+                <Typography fontSize={"small"} sx={{ mt: 0 }}>
+                  {video.likes.toLocaleString()} likes
                 </Typography>
               </CardContent>
             </CardActionArea>
