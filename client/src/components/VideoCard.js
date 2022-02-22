@@ -18,9 +18,33 @@ import DeleteIcon from "@mui/icons-material/Delete";
 
 const VideoCard = ({ video, user, updateFavoriteVideos, deleteVideo }) => {
   const [showEditDeleteButtons, setShowEditDeleteButtons] = useState(false);
-  const [isFavorited, setIsFavorited] = useState(
-    user.favorited_videos.includes(video)
-  );
+
+  // Since video objects are stored in state in multiple places (videos, user.favorited_videos, user.uploaded_videos),
+  //    and because .includes doesn't consider copies of objects to be equal, a custom search method is needed.
+  //    Video objects stored in videos state have an extra key (videoUploadedByUser), so this needs to be added
+  //    to video objects stored in user state in order to determine if they have equal values.
+  //    (It was easier to add a value to an object than to remove one.)
+  function favoritedStatus() {
+    const findFavorite = user.favorited_videos.find((favorited_video) => {
+      const favoritedVideoWithVideoUploadedByUser = {
+        ...favorited_video,
+        videoUploadedByUser: video.videoUploadedByUser,
+      };
+      return (
+        JSON.stringify(favoritedVideoWithVideoUploadedByUser) ===
+        JSON.stringify(video)
+      );
+    });
+
+    if (findFavorite === undefined) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+  const favorited = favoritedStatus();
+
+  const [isFavorited, setIsFavorited] = useState(favorited);
 
   const history = useHistory();
   const location = useLocation();
@@ -30,7 +54,6 @@ const VideoCard = ({ video, user, updateFavoriteVideos, deleteVideo }) => {
       setShowEditDeleteButtons(true);
     }
   }, []);
-
 
   function handleVideoThumbnailClick(e) {
     history.push(`/videos/${video.id}`);
@@ -82,7 +105,7 @@ const VideoCard = ({ video, user, updateFavoriteVideos, deleteVideo }) => {
 
     fetch(`/user_favorited_videos`, configObj)
       .then((resp) => resp.json())
-      .then((favoriteVideo) => {
+      .then((userFavoritedVideo) => {
         updateFavoriteVideos(video, isFavorited);
         setIsFavorited(true);
       });
@@ -94,7 +117,6 @@ const VideoCard = ({ video, user, updateFavoriteVideos, deleteVideo }) => {
 
   function handleDeleteClick(e) {
     deleteVideo(video.id);
-    // callback function from app (deleting the entire video, not just the join table record)
   }
 
   if (video && user) {

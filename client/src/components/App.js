@@ -65,8 +65,7 @@ function App() {
       if (resp.ok) {
         resp.json().then((newUser) => {
           console.log(newUser);
-          // log user in?
-          // confirmation page?
+          // confirmation page with login button?
         });
       }
     });
@@ -85,10 +84,12 @@ function App() {
       .then((resp) => resp.json())
       .then((video) => {
         const updatedVideos = [...videos, video];
+        const userUploadedVideos = [...user.uploaded_videos, video];
+
         setVideos(() => updatedVideos);
         setUser({
           ...user,
-          uploaded_videos: [...user.uploaded_videos, video],
+          uploaded_videos: userUploadedVideos,
         });
       });
   }
@@ -105,18 +106,42 @@ function App() {
     fetch(`/videos/${originalVideo.id}`, configObj).then((resp) => {
       if (resp.ok) {
         resp.json().then((updatedVideo) => {
-          const updatedVideos = user.uploaded_videos.map((uploaded_video) => {
-            if (uploaded_video.id === updatedVideo.id) {
-              return { ...updatedVideo };
-            } else {
-              return uploaded_video;
+          const updatedUserUploads = user.uploaded_videos.map(
+            (uploaded_video) => {
+              if (uploaded_video.id === updatedVideo.id) {
+                return updatedVideo;
+              } else {
+                return uploaded_video;
+              }
             }
-          });
+          );
+
+          const updatedFavoriteVideos = user.favorited_videos.map(
+            (favorited_video) => {
+              if (favorited_video.id === updatedVideo.id) {
+                return updatedVideo;
+              } else {
+                return favorited_video;
+              }
+            }
+          );
+
           const updatedUser = {
             ...user,
-            uploaded_videos: updatedVideos,
+            uploaded_videos: updatedUserUploads,
+            favorited_videos: updatedFavoriteVideos,
           };
+
+          const updatedVideos = videos.map((video) => {
+            if (video.id === updatedVideo.id) {
+              return updatedVideo;
+            } else {
+              return video;
+            }
+          });
+
           setUser(() => updatedUser);
+          setVideos(() => updatedVideos);
         });
       } else {
         console.log(resp);
@@ -125,23 +150,41 @@ function App() {
     });
   }
 
-  function updateFavoriteVideos(video, isFavorited) {
+  function updateFavoriteVideos(updatedVideo, isFavorited) {
     let updatedFavoriteVideos = [];
 
     if (isFavorited) {
       updatedFavoriteVideos = user.favorited_videos.filter(
-        (favorited_video) => favorited_video.id !== video.id
+        (favorited_video) => favorited_video.id !== updatedVideo.id
       );
     } else {
-      updatedFavoriteVideos = [...user.favorited_videos, video];
+      updatedFavoriteVideos = [...user.favorited_videos, updatedVideo];
     }
+
+    const updatedUserUploads = user.uploaded_videos.map((uploaded_video) => {
+      if (uploaded_video.id === updatedVideo.id) {
+        return { ...updatedVideo };
+      } else {
+        return uploaded_video;
+      }
+    });
 
     const updatedUser = {
       ...user,
       favorited_videos: updatedFavoriteVideos,
+      uploaded_videos: updatedUserUploads,
     };
 
+    const updatedVideos = videos.map((video) => {
+      if (video.id === updatedVideo.id) {
+        return { ...updatedVideo };
+      } else {
+        return video;
+      }
+    });
+
     setUser(() => updatedUser);
+    setVideos(() => updatedVideos);
   }
 
   function deleteVideo(id) {
@@ -158,6 +201,7 @@ function App() {
         // video cards instead of video state, you need to update
         // user state any time you want to re-render a video list
         setVideos(videos.filter((video) => video.id !== id));
+
         setUser({
           ...user,
           uploaded_videos: user.uploaded_videos.filter(

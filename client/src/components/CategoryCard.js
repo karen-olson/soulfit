@@ -6,7 +6,6 @@ const CategoryCard = ({ category }) => {
   const history = useHistory();
 
   function handleCategoryImageClick(e) {
-    // route to /categories/:id/videos
     history.push(`/categories/${category.id}/videos`);
   }
 
