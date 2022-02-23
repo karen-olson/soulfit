@@ -1,8 +1,6 @@
 require 'rest-client'
 require 'json'
 
-@youtube_api_key = ENV["YOUTUBE_API_KEY"]
-
 puts "🌱 Seeding..."
 
 Video.destroy_all
@@ -18,6 +16,8 @@ mindfulness = Category.create(name: "Mindfulness", img_url: "https://i.imgur.com
 pilates = Category.create(name: "Pilates", img_url: "https://i.imgur.com/iJ3ri9H.jpg")
 hiit = Category.create(name: "HIIT", img_url: "https://i.imgur.com/8JWLShr.jpg")
 
+@youtube_api_key = ENV["YOUTUBE_API_KEY"]
+
 @@category_query_count = 0
 @@video_query_count = 0
 
@@ -31,17 +31,6 @@ hiit = Category.create(name: "HIIT", img_url: "https://i.imgur.com/8JWLShr.jpg")
     "pilates",
     "hiit"
 ]
-
-@query_category_legend = {
-    "dance%20fitness" => "Dance Fitness",
-    "yoga" => "Yoga",
-    "warmup" => "Warmups",
-    "cooldown" => "Cooldowns",
-    "strength%20training" => "Strength Training",
-    "mindfulness" => "Mindfulness",
-    "pilates" => "Pilates",
-    "hiit" => "HIIT"
-}
 
 @video_ids_by_query = {
     "dance%20fitness" => [],
@@ -63,6 +52,17 @@ hiit = Category.create(name: "HIIT", img_url: "https://i.imgur.com/8JWLShr.jpg")
     "mindfulness" => [],
     "pilates" => [],
     "hiit" => []
+}
+
+@query_category_legend = {
+    "dance%20fitness" => "Dance Fitness",
+    "yoga" => "Yoga",
+    "warmup" => "Warmups",
+    "cooldown" => "Cooldowns",
+    "strength%20training" => "Strength Training",
+    "mindfulness" => "Mindfulness",
+    "pilates" => "Pilates",
+    "hiit" => "HIIT"
 }
 
 def fetch_and_create_videos
@@ -104,18 +104,6 @@ def get_individual_video_data
         end
     end
 end
-
-# YOUTUBE API LETS YOU SEARCH FOR A LIST OF VIDEO IDS - CAN REFACTOR TO SEARCH FOR THE WHOLE LIST AT ONCE
-# INSTEAD OF SEARCHING VIDEO BY VIDEO.
-# def search_api_for_videos(ids)
-#     system("clear")
-#     @@video_query_count = @@video_query_count + 1
-#     puts "@@video_query_count:" + @@video_query_count.to_s + " - getting videos (should be 80)"
-
-#     raw_video_data = RestClient.get("https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=#{ids[0]}&#{ids[1]}&#{ids[2]}&#{ids[3]}&#{ids[4]}&#{ids[5]}&#{ids[6]}&#{ids[7]}&#{ids[8]}&#{ids[9]}&key=#{@youtube_api_key}")
-        
-#     json_formatted_video_data = raw_video_data.map{|raw_video| JSON.parse(raw_video)["items"]}
-# end
 
 def search_api_for_video(id)
     system("clear")
@@ -189,7 +177,6 @@ def create_all_video_objects
     categories = get_categories
 
     categories.each_with_index do |category, index|
-        # create_video_objects_by_category(category)
         query = @queries[index]
 
         @video_data_by_query[query].each do |video|
