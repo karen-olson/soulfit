@@ -1,12 +1,7 @@
 require 'rest-client'
 require 'json'
 
-# To access ENV variable, run file with rails db:seed instead of ruby db/seeds.rb. 
-# When you run it with the ruby command, you don't have access to all the rails features.
 @youtube_api_key = ENV["YOUTUBE_API_KEY"]
-
-# If you're going to have users make API calls, consider making a class for it (service?)
-# To help other users understand what's going on in seeds.rb, add comments and put notes in readme
 
 puts "🌱 Seeding..."
 
@@ -87,13 +82,6 @@ def search_api_for_video_ids
     end
 
 end
-
-
-# updated search specifying region and category (26)
-# re-seed the DB using these parameters? --> make sure the category is correct
-# https://youtube.googleapis.com/youtube/v3/search?part=snippet%2CcontentDetails%2Cstatistics&eventType=completed&maxResults=10&order=rating&publishedAfter=2017-01-01T00%3A00%3A00Z&q=dance%2520fitness&regionCode=US&relevanceLanguage=en&type=video&videoCategoryId=26&videoDimension=2d&videoEmbeddable=true&videoSyndicated=true&key=[YOUR_API_KEY]
-
-
 
 def search_api_by_category(query)
     system("clear")
@@ -197,7 +185,6 @@ end
 
 
 ## 4 CREATE VIDEO OBJECTS ##################
-##### WHY ARE DANCE FITNESS AND YOGA VIDEOS BEING CREATED TWICE?
 def create_all_video_objects
     categories = get_categories
 
