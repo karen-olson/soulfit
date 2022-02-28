@@ -1,6 +1,4 @@
 class CategoriesController < ApplicationController
-    # remove this!
-    skip_before_action :authorize
 
     def index 
         categories = Category.all

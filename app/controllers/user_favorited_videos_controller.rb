@@ -1,6 +1,4 @@
 class UserFavoritedVideosController < ApplicationController
-    skip_before_action :authorize
-    # remove this!!
 
     def index
         videos = UserFavoritedVideo.all 
