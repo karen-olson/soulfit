@@ -1,4 +1,5 @@
 class VideosController < ApplicationController
+    before_action :find_video, only: [:show, :update, :destroy]
 
     def index
         videos = Video.all
@@ -6,8 +7,7 @@ class VideosController < ApplicationController
     end
 
     def show
-        video = find_video 
-        render json: video
+        render json: @video
     end
 
     def create
@@ -21,21 +21,19 @@ class VideosController < ApplicationController
     end
 
     def update
-        video = find_video
-        video.update!(video_params)
-        render json: video, status: :accepted
+        @video.update!(video_params)
+        render json: @video, status: :accepted
     end
 
     def destroy
-        video = find_video
-        video.destroy
+        @video.destroy
         head :no_content
     end
 
     private 
 
     def find_video
-        Video.find(params[:id])
+        @video = Video.find(params[:id])
     end
 
     def video_params
