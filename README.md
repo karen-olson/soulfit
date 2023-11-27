@@ -6,10 +6,6 @@ SoulFit is a video library for fitness and mindfulness videos. The frontend was 
 
 Check out the [video walkthrough](https://www.loom.com/share/9adb4cd688c54d5497689071e8b25756) of this project to see its features in action.
 
-## Deployed Site
-
-See the [deployed site](https://soul-fit.herokuapp.com/), hosted on Heroku.
-
 ## Packages
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app). Configuration was achieved using a React/Rails API template from Flatiron School.
